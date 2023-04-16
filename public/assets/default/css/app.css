@@ -7,7 +7,7 @@ $custom-control-indicator-bg:$primary;*/
 
 
 .home-banner-title {
-  color: #fff; /* sets text color to white */
+  color: #ffffff !important; /* sets text color to white */
   font-size: 2rem; /* adjusts font size, change to whatever size you need */
 }
 
