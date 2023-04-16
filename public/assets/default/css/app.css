@@ -12,7 +12,7 @@ $custom-control-indicator-bg:$primary;*/
 }
 
 .home-banner-paragraph {
-  color: #ffffff; /* sets text color to white */
+  color: #ffffff !important; /* sets text color to white */
   font-size: 18px;
   text-shadow: 2px 2px #000; /* adds a black drop shadow with 2px horizontal and vertical offset */
 }
