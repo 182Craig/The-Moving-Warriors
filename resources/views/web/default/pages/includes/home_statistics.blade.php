@@ -63,7 +63,7 @@
                                 <div class="stat-icon-box " style="background-color: {{ $homeCustomStatistic->color }}">
                                     <img src="{{ $homeCustomStatistic->icon }}" alt="{{ $homeCustomStatistic->title }}" class="img-fluid"/>
                                 </div>
-                                <strong class="stat-number mt-10">{{ $homeCustomStatistic->count }}</strong>
+                               <!-- <strong class="stat-number mt-10">{{ $homeCustomStatistic->count }}</strong> -->
                                 <h4 class="stat-title">{{ $homeCustomStatistic->title }}</h4>
                                 <p class="stat-desc mt-10">{{ $homeCustomStatistic->description }}</p>
                             </div>
