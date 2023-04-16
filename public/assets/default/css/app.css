@@ -11,12 +11,6 @@ $custom-control-indicator-bg:$primary;*/
   font-size: 4rem !important; /* adjusts font size, change to whatever size you need */
 }
 
-.home-banner-paragraph {
-  color: #ffffff !important; /* sets text color to white */
-  font-size: 18px !important;
-  text-shadow: 2px 2px #000; /* adds a black drop shadow with 2px horizontal and vertical offset */
-}
-
 
 
 .btn-text-primary {
@@ -18535,7 +18529,7 @@ p {
 }
 
 .slider-container .slider-content.hero-section2 h1 {
-  font-size: 54px;
+  font-size: 44px;
   line-height: 1.5;
   pointer-events: none;
 }
