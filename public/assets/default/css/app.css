@@ -11,6 +11,12 @@ $custom-control-indicator-bg:$primary;*/
   font-size: 4rem; /* adjusts font size, change to whatever size you need */
 }
 
+.home-banner-paragraph {
+  color: #fff; /* sets text color to white */
+  text-shadow: 2px 2px #000; /* adds a black drop shadow with 2px horizontal and vertical offset */
+}
+
+
 
 .btn-text-primary {
   color: #43d477 !important;
