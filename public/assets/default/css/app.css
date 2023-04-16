@@ -5,6 +5,13 @@ $custom-control-indicator-checked-border-color: $gray-300;
 $custom-control-indicator-checked-bg: #ffffff;
 $custom-control-indicator-bg:$primary;*/
 
+
+.home-banner-title {
+  color: #fff; /* sets text color to white */
+  font-size: 2rem; /* adjusts font size, change to whatever size you need */
+}
+
+
 .btn-text-primary {
   color: #43d477 !important;
 }
