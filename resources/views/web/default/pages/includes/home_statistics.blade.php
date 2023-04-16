@@ -64,7 +64,7 @@
                                     <img src="{{ $homeCustomStatistic->icon }}" alt="{{ $homeCustomStatistic->title }}" class="img-fluid"/>
                                 </div>
                                <!-- <strong class="stat-number mt-10">{{ $homeCustomStatistic->count }}</strong> -->
-                                <h4 class="stat-title">{{ $homeCustomStatistic->title }}</h4>
+                               <h4 class="stat-title" style="padding-top: 10px;">{{ $homeCustomStatistic->title }}</h4>
                                 <p class="stat-desc mt-10">{{ $homeCustomStatistic->description }}</p>
                             </div>
                         </div>
