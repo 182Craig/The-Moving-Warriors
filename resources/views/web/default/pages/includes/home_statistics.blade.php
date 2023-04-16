@@ -49,6 +49,23 @@
                             <h4 class="stat-title">{{ trans('home.offline_courses') }}</h4>
                             <p class="stat-desc mt-10">{{ trans('home.offline_courses_hint') }}</p>
                         </div>
+
+                        <div class="col-sm-6 col-lg-3 mt-25 mt-lg-0">
+                        <div class="stats-item d-flex flex-column align-items-center text-center py-30 px-5 w-100">
+                            <div class="stat-icon-box course">
+                                <img src="/assets/default/img/stats/course.svg" alt="" class="img-fluid"/>
+                            </div>
+                            <strong class="stat-number mt-10">{{ $homeDefaultStatistics['offlineCourseCount'] }}</strong>
+                            <h4 class="stat-title">{{ trans('home.offline_courses') }}</h4>
+                            <p class="stat-desc mt-10">{{ trans('home.offline_courses_hint') }}</p>
+                        </div>
+
+
+
+
+
+
+
                     </div>
                 </div>
             </div>
