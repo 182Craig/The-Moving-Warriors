@@ -45,13 +45,14 @@
 
 
 
-                            <form action="/search" method="get" class="d-inline-flex mt-30 mt-lg-30 w-100">
+                            <!-- <form action="/search" method="get" class="d-inline-flex mt-30 mt-lg-30 w-100">
                                 <div class="form-group d-flex align-items-center m-0 slider-search p-10 bg-white w-100">
                                     <input type="text" name="search" class="form-control border-0 mr-lg-50" placeholder="{{ trans('home.slider_search_placeholder') }}"/>
                                     <button type="submit" class="btn btn-primary rounded-pill">{{ trans('home.find') }}</button>
                                 </div>
-                            </form>
+                            </form> -->
                         </div>
+
                         <div class="col-12 col-md-5 col-lg-6">
                             @if(!empty($heroSectionData['has_lottie']) and $heroSectionData['has_lottie'] == "1")
                                 <lottie-player src="{{ $heroSectionData['hero_vector'] }}" background="transparent" speed="1" class="w-100" loop autoplay></lottie-player>
