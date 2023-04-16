@@ -58,7 +58,7 @@
             <div class="container">
                 <div class="row">
                     @foreach($homeCustomStatistics as $homeCustomStatistic)
-                        <div class="col-sm-6 col-lg-2 mt-25 mt-lg-0">
+                        <div class="col-sm-6 col-lg-3 mt-25 mt-lg-0">
                             <div class="stats-item d-flex flex-column align-items-center text-center py-30 px-5 w-100">
                                 <div class="stat-icon-box " style="background-color: {{ $homeCustomStatistic->color }}">
                                     <img src="{{ $homeCustomStatistic->icon }}" alt="{{ $homeCustomStatistic->title }}" class="img-fluid"/>
