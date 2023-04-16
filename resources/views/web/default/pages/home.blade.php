@@ -33,7 +33,7 @@
                     <div class="row slider-content align-items-center hero-section2 flex-column-reverse flex-md-row">
                         <div class="col-12 col-md-7 col-lg-6">
                             <!-- <h1 class="text-secondary font-weight-bold">{{ $heroSectionData['title'] }}</h1> -->
-                            <h1 class="home-banner-title" style="color: #ffffff; font-size: 48px;">
+                            <h1 class="home-banner-title" style="color: #ffffff; font-size: 48px; text-shadow: 2px 2px #000;">
                             {{ $heroSectionData['title'] }}
                             </h1>
 
