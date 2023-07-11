@@ -72,6 +72,8 @@
     @endif
 
 
+
+
     {{-- Statistics --}}
     @include('web.default.pages.includes.home_statistics')
 
@@ -156,6 +158,10 @@
                 </div>
             </section>
         @endif
+
+
+<h1> Thisis my header </h1>
+
 
         @if($homeSection->name == \App\Models\HomeSection::$latest_bundles and !empty($latestBundles) and !$latestBundles->isEmpty())
             <section class="home-sections home-sections-swiper container">
