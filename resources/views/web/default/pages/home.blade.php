@@ -162,10 +162,10 @@
 
         @if($homeSection->name == \App\Models\HomeSection::$latest_bundles and !empty($latestBundles) and !$latestBundles->isEmpty())
             
-        <section class="custom header intro">
+        <section class="custom intro>
             <div>
-                        <h2 class="section-title">Here Maybe</h2>
-                        <p class="section-hint">eeeeeeee</p>
+                        <h2>Here Maybe</h2>
+                        <p>eeeeeeee</p>
                     </div>
         </section>
         
