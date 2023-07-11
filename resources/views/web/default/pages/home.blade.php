@@ -159,9 +159,10 @@
             </section>
         @endif
 
-
-<h1> Thisis my header </h1>
-
+                    <div>
+                        <h2 class="section-title">Here</h2>
+                        <p class="section-hint">dddd dddd dddd</p>
+                    </div>
 
         @if($homeSection->name == \App\Models\HomeSection::$latest_bundles and !empty($latestBundles) and !$latestBundles->isEmpty())
             <section class="home-sections home-sections-swiper container">
