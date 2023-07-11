@@ -78,13 +78,19 @@ class AccountingController extends Controller
             }
         }
 
-        $registrationBonusSettings = getRegistrationBonusSettings();
-        $registrationBonusAccounting = Accounting::query()
-            ->where('user_id', $userAuth->id)
-            ->where('is_registration_bonus', true)
-            ->where('system', false)
-            ->first();
-        $registrationBonusAmount = (empty($registrationBonusAccounting) and !empty($registrationBonusSettings['status']) and !empty($registrationBonusSettings['registration_bonus_amount'])) ? $registrationBonusSettings['registration_bonus_amount'] : null;
+        $registrationBonusAmount = null;
+
+        if ($userAuth->enable_registration_bonus) {
+            $registrationBonusSettings = getRegistrationBonusSettings();
+
+            $registrationBonusAccounting = Accounting::query()
+                ->where('user_id', $userAuth->id)
+                ->where('is_registration_bonus', true)
+                ->where('system', false)
+                ->first();
+
+            $registrationBonusAmount = (empty($registrationBonusAccounting) and !empty($registrationBonusSettings['status']) and !empty($registrationBonusSettings['registration_bonus_amount'])) ? $registrationBonusSettings['registration_bonus_amount'] : null;
+        }
 
         $data = [
             'pageTitle' => trans('financial.charge_account_page_title'),

@@ -35,11 +35,6 @@ class InstallmentStep extends Model implements TranslatableContract
         return $this->belongsTo(Installment::class, 'installment_id', 'id');
     }
 
-    public function orderPayment()
-    {
-        return $this->hasOne(InstallmentOrderPayment::class, 'step_id', 'id');
-    }
-
     /*********
      * Helpers
      * */

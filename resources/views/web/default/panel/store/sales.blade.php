@@ -38,7 +38,7 @@
                 <div class="col-6 col-md-3 d-flex align-items-center justify-content-center mt-5 mt-md-0">
                     <div class="d-flex flex-column align-items-center text-center">
                         <img src="/assets/default/img/activity/33.png" width="64" height="64" alt="">
-                        <strong class="font-30 font-weight-bold mt-5 text-dark-blue">{{ handlePrice($totalSales) }}</strong>
+                        <strong class="font-30 font-weight-bold mt-5 text-dark-blue">{{ (!empty($totalSales) and $totalSales > 0) ? handlePrice($totalSales) : 0 }}</strong>
                         <span class="font-16 font-weight-500 text-gray">{{ trans('financial.total_sales') }}</span>
                     </div>
                 </div>

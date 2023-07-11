@@ -109,17 +109,22 @@ import RtmClient from './rtm-client';
                     //
                 });
 
-                rtm.on('ChannelMessage', ({channelName, args}) => {
-                    const [message, memberId, other] = args;
-
-                    const date = new Date(other.serverReceivedTs).toLocaleTimeString();
-                    chatView.append(chatItemHtml(message.text, memberId, date));
-
-                    updateChatViewScroll();
+                rtm.on('ChannelMessage',  ({channelName, args}) => {
+                    afterChannelMessage(args)
                 });
             });
         });
     });
+
+    async function afterChannelMessage([message, memberId, other]) {
+        const userId = memberId.replaceAll('user ','');
+        const date = new Date(other.serverReceivedTs).toLocaleTimeString();
+
+        const userInfo = await getUserInfo(userId);
+
+        chatView.append(chatItemHtml(message.text, userInfo.full_name, date));
+        updateChatViewScroll();
+    }
 
     function updateChatViewScroll() {
         const $chatView = $('#chatView');
@@ -140,7 +145,7 @@ import RtmClient from './rtm-client';
             rtm.sendChannelMessage(message, channelName).then(() => {
                 const date = new Date().toLocaleTimeString();
 
-                chatView.append(chatItemHtml(message, rtm.accountName, date));
+                chatView.append(chatItemHtml(message, userName, date));
 
                 updateChatViewScroll();
 

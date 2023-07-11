@@ -1484,6 +1484,7 @@ By enabling this feature, newly registered users will require approval using thi
 'choose_url' => 'Choose URL',
 'upcoming_courses' => 'Upcoming Courses',
 'installment_title' => 'Installment Title',
+'installment_payment' => 'Installment', 
 "statistics" => "Statistics",
 "financial_settings" => "Financial Settings",
 "upcoming_courses_lists_background" => "Upcoming Courses List Background",

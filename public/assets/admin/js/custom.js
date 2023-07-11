@@ -192,21 +192,21 @@
 
     $(document).ready(function () {
 
-        handleSearchableSelect2('search-user-select2', '/admin/users/search', 'name');
+        handleSearchableSelect2('search-user-select2', adminPanelPrefix + '/users/search', 'name');
 
-        handleSearchableSelect2('search-user-select22', '/admin/users/search', 'name');
+        handleSearchableSelect2('search-user-select22', adminPanelPrefix + '/users/search', 'name');
 
-        handleSearchableSelect2('search-webinar-select2', '/admin/webinars/search', 'title');
+        handleSearchableSelect2('search-webinar-select2', adminPanelPrefix + '/webinars/search', 'title');
 
-        handleSearchableSelect2('search-bundle-select2', '/admin/bundles/search', 'title');
+        handleSearchableSelect2('search-bundle-select2', adminPanelPrefix + '/bundles/search', 'title');
 
-        handleSearchableSelect2('search-forum-topic-select2', '/admin/forums/topics/search', 'title');
+        handleSearchableSelect2('search-forum-topic-select2', adminPanelPrefix + '/forums/topics/search', 'title');
 
-        handleSearchableSelect2('search-product-select2', '/admin/store/products/search', 'title');
+        handleSearchableSelect2('search-product-select2', adminPanelPrefix + '/store/products/search', 'title');
 
-        handleSearchableSelect2('search-category-select2', '/admin/categories/search', 'title');
+        handleSearchableSelect2('search-category-select2', adminPanelPrefix + '/categories/search', 'title');
 
-        handleSearchableSelect2('search-blog-select2', '/admin/blog/search', 'title');
+        handleSearchableSelect2('search-blog-select2', adminPanelPrefix + '/blog/search', 'title');
 
 
         var datefilter = $('.datefilter');
@@ -237,53 +237,12 @@
         }
     });
 
-    var lfm = function (options, cb) {
-        var route_prefix = (options && options.prefix) ? options.prefix : '/laravel-filemanager';
-        window.open(route_prefix + '?type=' + options.type || 'file', 'FileManager', 'width=900,height=600');
-        window.SetUrl = cb;
-    };
+
 
     // Define LFM summernote button
-    var LFMButton = function (context) {
-        var ui = $.summernote.ui;
-        var button = ui.button({
-            contents: '<i class="note-icon-picture"></i> ',
-            tooltip: 'Insert image with filemanager',
-            click: function () {
-
-                lfm({type: 'file', prefix: '/laravel-filemanager'}, function (lfmItems, path) {
-                    lfmItems.forEach(function (lfmItem) {
-                        context.invoke('insertImage', lfmItem.url);
-                    });
-                });
-
-            }
-        });
-        return button.render();
-    };
 
     if (jQuery().summernote) {
-        $(".summernote").summernote({
-            dialogsInBody: true,
-            tabsize: 2,
-            height: $(".summernote").attr('data-height') ?? 250,
-            fontNames: [],
-            toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'underline', 'clear']],
-
-                ['color', ['color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['table', ['table']],
-                ['insert', ['link', 'video']],
-                ['view', ['fullscreen', 'codeview', 'help']],
-                ['popovers', ['lfm']],
-                ['paperSize', ['paperSize']], // The Button
-            ],
-            buttons: {
-                lfm: LFMButton
-            }
-        });
+        makeSummernote($(".summernote"))
     }
 
 
@@ -424,13 +383,13 @@
     })
 
     /**********
-    * Captcha
-    * *********/
+     * Captcha
+     * *********/
     $(document).ready(function () {
         function captcha_src(callback) {
 
             $.ajax({
-                url: '/admin/captcha/create',
+                url: adminPanelPrefix + '/captcha/create',
                 type: 'post',
                 cache: false,
                 timeout: 30000,
@@ -457,7 +416,6 @@
         }
 
 
-
         $('body').on('click', '#refreshCaptcha', function (e) {
             e.preventDefault();
             refreshCaptcha();
@@ -469,7 +427,7 @@
             if ($refreshCaptcha.length) {
                 $refreshCaptcha.trigger('click')
             }
-        },100)
+        }, 100)
     })
 
     /**********

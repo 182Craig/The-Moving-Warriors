@@ -343,7 +343,7 @@ class Product extends Model implements TranslatableContract
         } else {
             $getStoreSettings = getStoreSettings();
 
-            if (!empty($getStoreSettings) and !empty($getStoreSettings['store_tax'])) {
+            if (!empty($getStoreSettings) and isset($getStoreSettings['store_tax'])) {
                 $tax = $getStoreSettings['store_tax'];
             } else {
                 $financialSettings = getFinancialSettings();

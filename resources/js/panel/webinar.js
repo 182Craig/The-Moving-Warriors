@@ -1,23 +1,8 @@
 (function ($) {
     "use strict";
 
-    if ($('#summernote').length) {
-        $('#summernote').summernote({
-            tabsize: 2,
-            height: 400,
-            placeholder: $('#summernote').attr('placeholder'),
-            dialogsInBody: true,
-            toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'underline', 'clear']],
-                ['fontname', ['fontname']],
-                ['color', ['color']],
-                ['para', ['paragraph']],
-                ['table', ['table']],
-                ['insert', ['link', 'picture', 'video']],
-                ['view', ['fullscreen', 'codeview', 'help']],
-            ],
-        });
+    if (jQuery().summernote) {
+        makeSummernote($('#summernote'), 400)
     }
 
 
@@ -179,9 +164,12 @@
         var formData = new FormData();
 
         const s3Input = form.find('.js-s3-file-input');
+        let hasFileForUpload = false;
 
         if (s3Input && s3Input.prop('files') && s3Input.prop('files')[0]) {
             formData.append('s3_file', s3Input.prop('files')[0]);
+
+            hasFileForUpload = true;
         }
 
         const items = form.find('input, textarea, select').serializeArray();
@@ -205,7 +193,7 @@
                 var percentComplete = 0;
 
                 xhr.upload.addEventListener("progress", function (event) {
-                    if (event.lengthComputable && (source === "s3" || source === "secure_host")) {
+                    if (event.lengthComputable && (source === "s3" || source === "secure_host") && hasFileForUpload) {
                         percentComplete = event.loaded / event.total * 100;
 
                         const percentage = (Math.round(percentComplete) - 1);
@@ -460,15 +448,12 @@
                     width: '100%',
                 });
 
-                $('.js-content-summernote-' + key).summernote({
-                    tabsize: 2,
-                    height: 400,
-                    callbacks: {
-                        onChange: function (contents, $editable) {
-                            $('.js-hidden-content-summernote-' + key).val(contents);
-                        }
-                    }
-                });
+
+                if (jQuery().summernote) {
+                    makeSummernote($('.js-content-summernote-' + key), 400, function (contents, $editable) {
+                        $('.js-hidden-content-summernote-' + key).val(contents);
+                    })
+                }
 
                 break;
 
@@ -625,15 +610,9 @@
 
         var summernoteTarget = $('.accordion-content-wrapper .js-content-summernote');
         if (summernoteTarget.length) {
-            summernoteTarget.summernote({
-                tabsize: 2,
-                height: 400,
-                callbacks: {
-                    onChange: function (contents, $editable) {
-                        $('.js-hidden-content-summernote').val(contents);
-                    }
-                }
-            });
+            makeSummernote(summernoteTarget, 400, function (contents, $editable) {
+                $('.js-hidden-content-summernote').val(contents);
+            })
         }
 
 

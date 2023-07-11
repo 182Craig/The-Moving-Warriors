@@ -5,10 +5,11 @@ namespace App\PaymentChannels\Drivers\Paytm;
 use Anand\LaravelPaytmWallet\Facades\PaytmWallet;
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use Illuminate\Http\Request;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
     protected $currency;
     /**
@@ -17,7 +18,7 @@ class Channel implements IChannel
      */
     public function __construct(PaymentChannel $paymentChannel)
     {
-        //$this->currency = currency();
+        $this->currency = currency();
     }
 
     public function paymentRequest(Order $order)
@@ -29,7 +30,7 @@ class Channel implements IChannel
             'user' => $order->user_id,
             'email' => $order->user->email,
             'mobile_number' => $order->user->mobile,
-            'amount' => $order->total_amount,
+            'amount' => $this->makeAmountByCurrency($order->total_amount, $this->currency),
             'callback_url' => $this->makeCallbackUrl($order)
         ]);
 

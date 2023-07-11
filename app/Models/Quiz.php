@@ -86,4 +86,27 @@ class Quiz extends Model implements TranslatableContract
 
         return null;
     }
+
+
+    public function canAccessToEdit($user = null)
+    {
+        if (empty($user)) {
+            $user = auth()->user();
+        }
+
+        $result = false;
+
+        if (!empty($user)) {
+            $webinar = null;
+            if (!empty($this->webinar_id)) {
+                $webinar = Webinar::query()->find($this->webinar_id);
+            }
+
+            if ($this->creator_id == $user->id or (!empty($webinar) and $webinar->canAccess($user))) {
+                $result = true;
+            }
+        }
+
+        return $result;
+    }
 }

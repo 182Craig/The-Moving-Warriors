@@ -2674,7 +2674,7 @@ a.dropdown-item:focus, a.dropdown-item:active, a.dropdown-item.active {
 
 @media (max-width: 575.98px) {
     .dropdown-list-toggle {
-        position: static;
+        position: static !important;
     }
 
     .dropdown-list-toggle .dropdown-list {
@@ -3239,7 +3239,7 @@ pre {
 /* 4.2 Section */
 .section {
     position: relative;
-    z-index: 1;
+    /*z-index: 1;*/
 }
 
 .section .section-header {

@@ -428,7 +428,7 @@ class User extends Authenticatable
             $commission = $getUserGroup->commission;
         }
 
-        if (!empty($this->commission)) {
+        if (isset($this->commission)) {
             $commission = $this->commission;
         }
 

@@ -1,5 +1,11 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="{{ app()->getLocale() }}">
+@php
+    $rtlLanguages = !empty($generalSettings['rtl_languages']) ? $generalSettings['rtl_languages'] : [];
+
+    $isRtl = ((in_array(mb_strtoupper(app()->getLocale()), $rtlLanguages)) or (!empty($generalSettings['rtl_layout']) and $generalSettings['rtl_layout'] == 1));
+@endphp
+
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
@@ -11,10 +17,13 @@
     <link rel="stylesheet" href="/assets/admin/vendor/daterangepicker/daterangepicker.min.css">
     <link rel="stylesheet" href="/assets/admin/css/style.css">
     <link rel="stylesheet" href="/assets/admin/css/components.css">
+    @if($isRtl)
+        <link rel="stylesheet" href="/assets/admin/css/rtl.css">
+    @endif
     <link rel="stylesheet" href="/assets/default/vendors/toast/jquery.toast.min.css">
     <link rel="stylesheet" href="/assets/admin/css/custom.css">
 </head>
-<body>
+<body class="@if($isRtl) rtl @endif">
 
 <div id="app">
     @php
@@ -41,7 +50,6 @@
           </div>
             </div>
 
-
         </div>
     </section>
 </div>
@@ -65,6 +73,8 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
+        window.adminPanelPrefix = '{{ getAdminPanelUrl() }}';
 
         @if(session()->has('toast'))
         $.toast({

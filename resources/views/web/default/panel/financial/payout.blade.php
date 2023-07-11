@@ -62,6 +62,7 @@
                                     <th class="text-center">{{ trans('public.type') }}</th>
                                     <th class="text-center">{{ trans('panel.amount') }} ({{ $currency }})</th>
                                     <th class="text-center">{{ trans('public.status') }}</th>
+                                    <th class="text-center">{{ trans('admin/main.actions') }}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -70,7 +71,11 @@
                                     <tr>
                                         <td>
                                             <div class="text-left">
+                                            @if(!empty($payout->userSelectedBank->bank))
                                                 <span class="d-block font-weight-500 text-dark-blue">{{ $payout->userSelectedBank->bank->title }}</span>
+                                                @else
+                                                <span class="d-block font-weight-500 text-dark-blue">-</span>
+                                                @endif
                                                 <span class="d-block font-12 text-gray mt-1">{{ dateTimeFormat($payout->created_at, 'j M Y | H:i') }}</span>
                                             </div>
                                         </td>
@@ -92,6 +97,28 @@
                                                     <span class="">{{ trans('public.done') }}</span>
                                                     @break;
                                             @endswitch
+                                        </td>
+
+                                        <td>
+                                            {{-- For Modal --}}
+                                            @php
+                                                $bank = $payout->userSelectedBank->bank;
+                                            @endphp
+
+                                            <input type="hidden" class="js-bank-details" data-name="{{ trans("admin/main.bank") }}" value="{{ $bank->title }}">
+                                            @foreach($bank->specifications as $specification)
+                                                @php
+                                                    $selectedBankSpecification = $payout->userSelectedBank->specifications->where('user_selected_bank_id', $payout->userSelectedBank->id)->where('user_bank_specification_id', $specification->id)->first();
+                                                @endphp
+
+                                                @if(!empty($selectedBankSpecification))
+                                                    <input type="hidden" class="js-bank-details" data-name="{{ $specification->name }}" value="{{ $selectedBankSpecification->value }}">
+                                                @endif
+                                            @endforeach
+
+                                            <button type="button" class="js-show-details btn-transparent btn-sm" data-toggle="tooltip" data-placement="top" title="{{ trans('update.show_details') }}">
+                                                <i data-feather="eye" width="18" class=""></i>
+                                            </button>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -161,5 +188,10 @@
 @endsection
 
 @push('scripts_bottom')
+    <script>
+        var payoutDetailsLang = '{{ trans('update.payout_details') }}';
+        var closeLang = '{{ trans('public.close') }}';
+    </script>
+
     <script src="/assets/default/js/panel/financial/payout.min.js"></script>
 @endpush

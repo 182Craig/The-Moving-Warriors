@@ -382,7 +382,7 @@ class AssignmentController extends Controller
 
                 $this->handleAttachments($data['attachments'], $user->id, $assignment->id);
 
-                WebinarChapterItem::makeItem($user->id, $assignment->chapter_id, $assignment->id, WebinarChapterItem::$chapterAssignment);
+                WebinarChapterItem::makeItem($assignment->creator_id, $assignment->chapter_id, $assignment->id, WebinarChapterItem::$chapterAssignment);
             }
 
             return response()->json([
@@ -470,7 +470,7 @@ class AssignmentController extends Controller
                 ]);
 
                 if ($changeChapter) {
-                    WebinarChapterItem::changeChapter($user->id, $oldChapterId, $assignment->chapter_id, $assignment->id, WebinarChapterItem::$chapterAssignment);
+                    WebinarChapterItem::changeChapter($assignment->creator_id, $oldChapterId, $assignment->chapter_id, $assignment->id, WebinarChapterItem::$chapterAssignment);
                 }
 
                 WebinarAssignmentTranslation::updateOrCreate([
@@ -481,7 +481,7 @@ class AssignmentController extends Controller
                     'description' => $data['description'],
                 ]);
 
-                $this->handleAttachments($data['attachments'], $user->id, $assignment->id);
+                $this->handleAttachments($data['attachments'], $assignment->creator_id, $assignment->id);
 
                 return response()->json([
                     'code' => 200,

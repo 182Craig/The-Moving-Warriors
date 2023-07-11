@@ -77,12 +77,14 @@ class InstallmentPurchasesExport implements FromCollection, WithHeadings, WithMa
 
         $upfront = '--';
 
-        if (!empty($order->installment->upfront)) {
-            $upfront = ($order->installment->upfront_type == 'percent') ? $order->installment->upfront . '%' : handlePrice($order->installment->upfront);
+        $selectedInstallment = $order->selectedInstallment;
+
+        if (!empty($selectedInstallment->upfront)) {
+            $upfront = ($selectedInstallment->upfront_type == 'percent') ? $selectedInstallment->upfront . '%' : handlePrice($selectedInstallment->upfront);
         }
 
-        $stepsFixedAmount = $order->installment->steps->where('amount_type', 'fixed_amount')->sum('amount');
-        $stepsPercents = $order->installment->steps->where('amount_type', 'percent')->sum('amount');
+        $stepsFixedAmount = $selectedInstallment->steps->where('amount_type', 'fixed_amount')->sum('amount');
+        $stepsPercents = $selectedInstallment->steps->where('amount_type', 'percent')->sum('amount');
         $installmentsAmount = ($stepsFixedAmount ? handlePrice($stepsFixedAmount) : '') . ($stepsPercents ? (($stepsFixedAmount ? ' + ' : '') . $stepsPercents . '%') : '');
 
         $status = "";
@@ -102,14 +104,14 @@ class InstallmentPurchasesExport implements FromCollection, WithHeadings, WithMa
             $order->user->id . ' - ' . $order->user->full_name,
             $order->user->mobile,
             $order->user->email,
-            $order->installment->title,
-            trans('update.target_types_'.$order->installment->target_type),
+            $selectedInstallment->installment->title,
+            trans('update.target_types_'.$selectedInstallment->installment->target_type),
             $product,
             $productType,
             dateTimeFormat($order->created_at, 'j M Y'),
             handlePrice($order->getCompletePrice()),
             $upfront,
-            $order->installment->steps_count,
+            $selectedInstallment->steps_count,
             $installmentsAmount,
             $order->overdue_count,
             handlePrice($order->overdue_amount),

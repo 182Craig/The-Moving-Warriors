@@ -15,7 +15,7 @@ mix
 // .js('resources/js/app.js', 'public/assets/default/js')
 //
 // scss
-// .sass('resources/sass/app.scss', 'public/assets/default/css')
+.sass('resources/sass/app.scss', 'public/assets/default/css')
 // .sass('resources/sass/panel.scss', 'public/assets/default/css')
 // .sass('resources/sass/rtl-app.scss', 'public/assets/default/css')
 
@@ -63,13 +63,15 @@ mix
 // .js('resources/js/parts/topic_posts.js', 'public/assets/default/js/parts/topic_posts.min.js')
 // .js('resources/js/parts/installment_verify.js', 'public/assets/default/js/parts/installment_verify.min.js')
 // .js('resources/js/parts/maintenance.js', 'public/assets/default/js/parts/maintenance.min.js')
+// .js('resources/js/parts/gifts.js', 'public/assets/default/js/parts/gifts.min.js')
+// .js('resources/js/parts/forgot_password.js', 'public/assets/default/js/parts/forgot_password.min.js')
 
 
 // .babel('resources/js/panel/public.js', 'public/assets/default/js/panel/public.min.js')
 // .babel('resources/js/panel/webinar.js', 'public/assets/default/js/panel/webinar.min.js')
 // .babel('resources/js/panel/webinar_content_locale.js', 'public/assets/default/js/panel/webinar_content_locale.min.js')
 // .babel('resources/js/panel/join_webinar.js', 'public/assets/default/js/panel/join_webinar.min.js')
-// .babel('resources/js/panel/upcoming_course.js', 'public/assets/default/js/panel/upcoming_course.min.js')
+// .js('resources/js/panel/upcoming_course.js', 'public/assets/default/js/panel/upcoming_course.min.js')
 // .babel('resources/js/panel/create_upcoming_course.js', 'public/assets/default/js/panel/create_upcoming_course.min.js')
 // .babel('resources/js/panel/make_next_session.js', 'public/assets/default/js/panel/make_next_session.min.js')
 // .babel('resources/js/panel/quiz.js', 'public/assets/default/js/panel/quiz.min.js')
@@ -80,7 +82,7 @@ mix
 // .babel('resources/js/panel/certificates.js', 'public/assets/default/js/panel/certificates.min.js')
 //
 // .babel('resources/js/panel/financial/account.js', 'public/assets/default/js/panel/financial/account.min.js')
-// .babel('resources/js/panel/financial/payout.js', 'public/assets/default/js/panel/financial/payout.min.js')
+// .js('resources/js/panel/financial/payout.js', 'public/assets/default/js/panel/financial/payout.min.js')
 // .babel('resources/js/panel/financial/subscribes.js', 'public/assets/default/js/panel/financial/subscribes.min.js')
 
 // .babel('resources/js/panel/marketing/promotions.js', 'public/assets/default/js/panel/marketing/promotions.min.js')
@@ -137,6 +139,8 @@ mix
 // .js('resources/js/admin/settings/update_app.js', 'public/assets/default/js/admin/settings/update_app.min.js')
 // .js('resources/js/admin/settings/offline_banks_credits.js', 'public/assets/default/js/admin/settings/offline_banks_credits.min.js')
 // .js('resources/js/admin/settings/user_banks.js', 'public/assets/default/js/admin/settings/user_banks.min.js')
+// .js('resources/js/admin/settings/gifts_settings.js', 'public/assets/default/js/admin/settings/gifts_settings.min.js')
+// .js('resources/js/admin/gifts.js', 'public/assets/default/js/admin/gifts.min.js')
 // .babel('resources/js/admin/user_edit.js', 'public/assets/default/js/admin/user_edit.min.js')
 // .babel('resources/js/admin/webinar_reports.js', 'public/assets/default/js/admin/webinar_reports.min.js')
 // .babel('resources/js/admin/new_registration_packages.js', 'public/assets/default/js/admin/new_registration_packages.min.js')
@@ -158,5 +162,7 @@ mix
 // .js('resources/js/admin/cashback_create_rule.js', 'public/assets/default/js/admin/cashback_create_rule.min.js')
 // .js('resources/js/admin/registration_bonus_settings.js', 'public/assets/default/js/admin/registration_bonus_settings.min.js')
 // .js('resources/js/admin/special_offers.js', 'public/assets/default/js/admin/special_offers.min.js')
+// .js('resources/js/admin/floating_bar.js', 'public/assets/default/js/admin/floating_bar.min.js')
+// .js('resources/js/admin/payout.js', 'public/assets/default/js/admin/payout.min.js')
 ;
 

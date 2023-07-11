@@ -4,6 +4,7 @@ namespace App\PaymentChannels\Drivers\Payu;
 
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use Illuminate\Http\Request;
 use Tzsk\Payu\Concerns\Attributes;
@@ -11,14 +12,17 @@ use Tzsk\Payu\Concerns\Customer;
 use Tzsk\Payu\Concerns\Transaction;
 use Tzsk\Payu\Facades\Payu;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
+    protected $currency;
+
     /**
      * Channel constructor.
      * @param PaymentChannel $paymentChannel
      */
     public function __construct(PaymentChannel $paymentChannel)
     {
+        $this->currency = currency();
     }
 
     public function paymentRequest(Order $order)
@@ -32,7 +36,7 @@ class Channel implements IChannel
             ->udf2($order->user->id);
 
         $transaction = Transaction::make()
-            ->charge($order->amount)
+            ->charge($this->makeAmountByCurrency($order->total_amount, $this->currency))
             ->for('Product')
             ->with($attributes)
             ->to($customer);

@@ -139,7 +139,7 @@ class Setting extends Model implements TranslatableContract
         }
 
         if (!empty($value) and !empty($key)) {
-            if (!empty($value[$key])) {
+            if (isset($value[$key])) {
                 return $value[$key];
             } else {
                 return null;

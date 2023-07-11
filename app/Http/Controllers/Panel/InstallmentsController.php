@@ -8,6 +8,7 @@ use App\Models\Cart;
 use App\Models\InstallmentOrder;
 use App\Models\InstallmentOrderPayment;
 use App\Models\InstallmentStep;
+use App\Models\SelectedInstallmentStep;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -28,7 +29,7 @@ class InstallmentsController extends Controller
 
 
         $orders = $query->with([
-            'installment' => function ($query) {
+            'selectedInstallment' => function ($query) {
                 $query->with([
                     'steps' => function ($query) {
                         $query->orderBy('deadline', 'asc');
@@ -85,10 +86,10 @@ class InstallmentsController extends Controller
 
         $itemPrice = $order->getItemPrice();
 
-        foreach ($order->installment->steps as $step) {
+        foreach ($order->selectedInstallment->steps as $step) {
             $payment = InstallmentOrderPayment::query()
                 ->where('installment_order_id', $order->id)
-                ->where('step_id', $step->id)
+                ->where('selected_installment_step_id', $step->id)
                 ->where('status', 'paid')
                 ->whereHas('sale', function ($query) {
                     $query->whereNull('refund_at');
@@ -115,13 +116,13 @@ class InstallmentsController extends Controller
         $time = time();
         $itemPrice = $order->getItemPrice();
 
-        foreach ($order->installment->steps as $step) {
+        foreach ($order->selectedInstallment->steps as $step) {
             $dueAt = ($step->deadline * 86400) + $order->created_at;
 
             if ($dueAt < $time) {
                 $payment = InstallmentOrderPayment::query()
                     ->where('installment_order_id', $order->id)
-                    ->where('step_id', $step->id)
+                    ->where('selected_installment_step_id', $step->id)
                     ->where('status', 'paid')
                     ->first();
 
@@ -143,10 +144,10 @@ class InstallmentsController extends Controller
         $result = null;
         $deadline = 0;
 
-        foreach ($order->installment->steps as $step) {
+        foreach ($order->selectedInstallment->steps as $step) {
             $payment = InstallmentOrderPayment::query()
                 ->where('installment_order_id', $order->id)
-                ->where('step_id', $step->id)
+                ->where('selected_installment_step_id', $step->id)
                 ->where('status', 'paid')
                 ->first();
 
@@ -187,13 +188,13 @@ class InstallmentsController extends Controller
         $count = 0;
 
         foreach ($orders as $order) {
-            $steps = $order->installment->steps;
+            $steps = $order->selectedInstallment->steps;
             $paidAllSteps = true;
 
             foreach ($steps as $step) {
                 $payment = InstallmentOrderPayment::query()
                     ->where('installment_order_id', $order->id)
-                    ->where('step_id', $step->id)
+                    ->where('selected_installment_step_id', $step->id)
                     ->where('status', 'paid')
                     ->whereHas('sale', function ($query) {
                         $query->whereNull('refund_at');
@@ -221,7 +222,7 @@ class InstallmentsController extends Controller
             ->where('id', $orderId)
             ->where('user_id', $user->id)
             ->with([
-                'installment' => function ($query) {
+                'selectedInstallment' => function ($query) {
                     $query->with([
                         'steps' => function ($query) {
                             $query->orderBy('deadline', 'asc');
@@ -236,7 +237,7 @@ class InstallmentsController extends Controller
             $getRemainedInstallments = $this->getRemainedInstallments($order);
             $getOverdueOrderInstallments = $this->getOverdueOrderInstallments($order);
 
-            $totalParts = $order->installment->steps->count();
+            $totalParts = $order->selectedInstallment->steps->count();
             $remainedParts = $getRemainedInstallments['total'];
             $remainedAmount = $getRemainedInstallments['amount'];
             $overdueAmount = $getOverdueOrderInstallments['amount'];
@@ -249,7 +250,7 @@ class InstallmentsController extends Controller
                 'overdueAmount' => $overdueAmount,
                 'order' => $order,
                 'payments' => $order->payments,
-                'installment' => $order->installment,
+                'installment' => $order->selectedInstallment,
                 'itemPrice' => $order->getItemPrice(),
             ];
 
@@ -315,13 +316,17 @@ class InstallmentsController extends Controller
             ->first();
 
         if (!empty($order)) {
-            $step = InstallmentStep::query()
-                ->where('installment_id', $order->installment_id)
-                ->where('id', $stepId)
-                ->first();
+            $selectedInstallment = $order->selectedInstallment;
 
-            if (!empty($step)) {
-                return $this->handlePayStep($order, $step);
+            if (!empty($selectedInstallment)) {
+                $step = SelectedInstallmentStep::query()
+                    ->where('selected_installment_id', $selectedInstallment->id)
+                    ->where('id', $stepId)
+                    ->first();
+
+                if (!empty($step)) {
+                    return $this->handlePayStep($order, $step);
+                }
             }
         }
 
@@ -334,7 +339,7 @@ class InstallmentsController extends Controller
             'installment_order_id' => $order->id,
             'sale_id' => null,
             'type' => 'step',
-            'step_id' => $step->id,
+            'selected_installment_step_id' => $step->id,
             'amount' => $step->getPrice($order->getItemPrice()),
             'status' => 'paying',
         ], [

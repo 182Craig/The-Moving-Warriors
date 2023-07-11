@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Models\BlogCategory;
+use App\Models\Reward;
+use App\Models\RewardAccounting;
 use App\Models\Translation\BlogTranslation;
 use App\Models\Role;
 use App\User;
@@ -193,6 +195,11 @@ class BlogController extends Controller
         removeContentLocale();
 
         if ($post->status == 'publish' and $post->author_id != auth()->id()) {
+
+            $createPostReward = RewardAccounting::calculateScore(Reward::CREATE_BLOG_BY_INSTRUCTOR);
+            RewardAccounting::makeRewardAccounting($post->author_id, $createPostReward, Reward::CREATE_BLOG_BY_INSTRUCTOR, $post->id, true);
+
+
             $notifyOptions = [
                 '[blog_title]' => $post->title,
             ];

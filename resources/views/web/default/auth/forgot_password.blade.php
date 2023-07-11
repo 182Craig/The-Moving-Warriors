@@ -1,6 +1,11 @@
 @extends(getTemplate().'.layouts.app')
 
 @section('content')
+    @php
+        $registerMethod = getGeneralSettings('register_method') ?? 'mobile';
+    @endphp
+
+
     <div class="container">
         <div class="row login-container">
             <div class="col-12 col-md-6 pl-0">
@@ -15,16 +20,36 @@
                     <form method="post" action="/forget-password" class="mt-35">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
-                        <div class="form-group">
-                            <label class="input-label" for="username">{{ trans('auth.email_or_mobile') }}:</label>
-                            <input name="username" type="text" class="form-control @error('username') is-invalid @enderror" id="username"
-                                   value="{{ old('username') }}" aria-describedby="emailHelp">
-                            @error('username')
+                        @if($registerMethod == 'mobile')
+                            <div class="d-flex align-items-center wizard-custom-radio mb-20">
+                                <div class="wizard-custom-radio-item flex-grow-1">
+                                    <input type="radio" name="type" value="email" id="emailType" class="" {{ (empty(old('type')) or old('type') == "email") ? 'checked' : '' }}>
+                                    <label class="font-12 cursor-pointer px-15 py-10" for="emailType">{{ trans('public.email') }}</label>
+                                </div>
+
+                                <div class="wizard-custom-radio-item flex-grow-1">
+                                    <input type="radio" name="type" value="mobile" id="mobileType" class="" {{ (old('type') == "mobile") ? 'checked' : '' }}>
+                                    <label class="font-12 cursor-pointer px-15 py-10" for="mobileType">{{ trans('public.mobile') }}</label>
+                                </div>
+                            </div>
+                        @endif
+
+                        <div class="js-email-fields form-group {{ (old('type') == "mobile") ? 'd-none' : '' }}">
+                            <label class="input-label" for="email">{{ trans('public.email') }}:</label>
+                            <input name="email" type="email" class="form-control @error('email') is-invalid @enderror" id="email"
+                                   value="{{ old('email') }}" aria-describedby="emailHelp">
+                            @error('email')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>
                             @enderror
                         </div>
+
+                        @if($registerMethod == 'mobile')
+                            <div class="js-mobile-fields {{ (old('type') == "mobile") ? '' : 'd-none' }}">
+                                @include('web.default.auth.register_includes.mobile_field')
+                            </div>
+                        @endif
 
                         @if(!empty(getGeneralSecuritySettings('captcha_for_forgot_pass')))
                             @include('web.default.includes.captcha_input')
@@ -49,3 +74,7 @@
         </div>
     </div>
 @endsection
+
+@push('scripts_bottom')
+    <script src="/assets/default/js/parts/forgot_password.min.js"></script>
+@endpush

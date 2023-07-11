@@ -20,7 +20,9 @@ class RewardAccounting extends Model
 
     public static function makeRewardAccounting($userId, $score, $type, $itemId = null, $checkDuplicate = false, $status = self::ADDICTION)
     {
-        if ($score and $score > 0) {
+        $rewardsSettings = getRewardsSettings();
+
+        if ($score and $score > 0 and !empty($rewardsSettings) and !empty($rewardsSettings['status'])) {
             $create = true;
 
             if ($checkDuplicate) {
@@ -37,6 +39,8 @@ class RewardAccounting extends Model
                 self::createAccounting($userId, $itemId, $type, $score, $status);
             }
         }
+
+        return true;
     }
 
     private static function createAccounting($userId, $itemId, $type, $score, $status): bool

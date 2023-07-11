@@ -34,13 +34,16 @@ class ForgotPasswordController extends Controller
 
     public function forgot(Request $request)
     {
-        if ($this->username() == 'email') {
+        $type = $request->get('type');
+
+        if ($type == 'mobile') {
             $rules = [
-                'username' => 'required|email|exists:users,email',
+                'mobile' => 'required|numeric',
+                'country_code' => 'required',
             ];
         } else {
             $rules = [
-                'username' => 'required|numeric|exists:users,mobile',
+                'email' => 'required|email|exists:users,email',
             ];
         }
 
@@ -50,16 +53,17 @@ class ForgotPasswordController extends Controller
 
         $request->validate($rules);
 
-        if ($this->username() == 'email') {
-            return $this->getByEmail($request);
-        } else {
+        if ($type == 'mobile') {
             return $this->getByMobile($request);
+        } else {
+            return $this->getByEmail($request);
         }
     }
 
     private function getByMobile(Request $request)
     {
-        $mobile = $request->get('username');
+        $data = $request->all();
+        $mobile = ltrim($data['country_code'], '+') . ltrim($data['mobile'], '0');
 
         $user = User::query()->where('mobile', $mobile)->first();
 
@@ -81,12 +85,14 @@ class ForgotPasswordController extends Controller
             return redirect('/login')->with(['toast' => $toastData]);
         }
 
-        abort(404);
+        return back()->withInput($request->all())->withErrors([
+            'mobile' => [trans('validation.exists', ['attribute' => trans('public.mobile')])]
+        ]);
     }
 
     private function getByEmail(Request $request)
     {
-        $email = $request->get('username');
+        $email = $request->get('email');
         $token = \Illuminate\Support\Str::random(60);
 
         DB::table('password_resets')->insert([

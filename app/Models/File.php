@@ -104,6 +104,11 @@ class File extends Model implements TranslatableContract
         return $icon;
     }
 
+    public function getVolume()
+    {
+        return $this->volume . ' MB';
+    }
+
     public function checkPassedItem()
     {
         $result = false;

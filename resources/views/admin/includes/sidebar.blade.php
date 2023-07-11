@@ -20,7 +20,7 @@
         <ul class="sidebar-menu">
             @can('admin_general_dashboard_show')
                 <li class="{{ (request()->is(getAdminPanelUrl('/'))) ? 'active' : '' }}">
-                    <a href="/admin" class="nav-link">
+                    <a href="{{ getAdminPanelUrl('') }}" class="nav-link">
                         <i class="fas fa-fire"></i>
                         <span>{{ trans('admin/main.dashboard') }}</span>
                     </a>

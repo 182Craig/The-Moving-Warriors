@@ -67,6 +67,7 @@
             $showOfflineFields = true;
         }
 
+        $isMultiCurrency = !empty(getFinancialCurrencySettings('multi_currency'));
         $userCurrency = currency();
         $invalidChannels = [];
     @endphp
@@ -83,7 +84,7 @@
 
             <div class="row">
                 @foreach($paymentChannels as $paymentChannel)
-                    @if(!empty($paymentChannel->currencies) and in_array($userCurrency, $paymentChannel->currencies))
+                    @if(!$isMultiCurrency or (!empty($paymentChannel->currencies) and in_array($userCurrency, $paymentChannel->currencies)))
                         <div class="col-6 col-lg-3 mb-40 charge-account-radio">
                             <input type="radio" class="online-gateway" name="gateway" id="{{ $paymentChannel->class_name }}" @if(old('gateway') == $paymentChannel->class_name) checked @endif value="{{ $paymentChannel->class_name }}">
                             <label for="{{ $paymentChannel->class_name }}" class="rounded-sm p-20 p-lg-45 d-flex flex-column align-items-center justify-content-center">
@@ -179,7 +180,7 @@
 
                     <div class="col-12 col-lg-3 mb-25 mb-lg-0 js-offline-payment-input " style="{{ (!$showOfflineFields) ? 'display:none' : '' }}">
                         <div class="form-group">
-                            <label for="referralCode" class="input-label">{{ trans('financial.referral_code') }}</label>
+                            <label for="referralCode" class="input-label">{{ trans('admin/main.referral_code') }}</label>
                             <input type="text" name="referral_code" id="referralCode" value="{{ !empty($editOfflinePayment) ? $editOfflinePayment->reference_number : old('referral_code') }}" class="form-control @error('referral_code') is-invalid @enderror"/>
                             @error('referral_code')
                             <div class="invalid-feedback"> {{ $message }}</div>
@@ -290,7 +291,12 @@
                                     <tr>
                                         <td class="text-left">
                                             <div class="d-flex flex-column">
+
+                                                @if(!empty($offlinePayment->offlineBank))
                                                 <span class="font-weight-500 text-dark-blue">{{ $offlinePayment->offlineBank->title }}</span>
+                                                @else
+                                                <span class="font-weight-500 text-dark-blue">-</span>
+                                                @endif
                                                 <span class="font-12 text-gray">{{ dateTimeFormat($offlinePayment->pay_date, 'j M Y H:i') }}</span>
                                             </div>
                                         </td>

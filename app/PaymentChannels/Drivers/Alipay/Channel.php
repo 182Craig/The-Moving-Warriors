@@ -4,11 +4,12 @@ namespace App\PaymentChannels\Drivers\Alipay;
 
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use Illuminate\Http\Request;
 use Omnipay\Omnipay;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
     protected $currency;
     protected $test_mode;
@@ -70,7 +71,7 @@ class Channel implements IChannel
         return [
             "out_trade_no" => $order->id,
             "subject" => 'Pay Cart Items',
-            "total_fee" => $order->total_amount,
+            "total_fee" => $this->makeAmountByCurrency($order->total_amount, $this->currency),
             "currency" => $this->currency,
         ];
     }

@@ -27,7 +27,8 @@
                 </a>
             @endif
 
-            <i class="collapse-chevron-icon" data-feather="chevron-down" height="20" href="#collapseFile{{ !empty($file) ? $file->id :'record' }}" aria-controls="collapseFile{{ !empty($file) ? $file->id :'record' }}" data-parent="#chapterContentAccordion{{ !empty($chapter) ? $chapter->id :'' }}" role="button" data-toggle="collapse" aria-expanded="true"></i>
+            <i class="collapse-chevron-icon" data-feather="chevron-down" height="20" href="#collapseFile{{ !empty($file) ? $file->id :'record' }}" aria-controls="collapseFile{{ !empty($file) ? $file->id :'record' }}" data-parent="#chapterContentAccordion{{ !empty($chapter) ? $chapter->id :'' }}" role="button" data-toggle="collapse"
+               aria-expanded="true"></i>
         </div>
     </div>
 
@@ -142,6 +143,38 @@
                                 </div>
                             </div>
                         </div>
+
+                        @if(getFeaturesSettings('sequence_content_status'))
+                            <div class="form-group mt-20">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <label class="cursor-pointer input-label" for="SequenceContentSwitch{{ !empty($file) ? $file->id : '_record' }}">{{ trans('update.sequence_content') }}</label>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" name="ajax[{{ !empty($file) ? $file->id : 'new' }}][sequence_content]" class="js-sequence-content-switch custom-control-input"
+                                               id="SequenceContentSwitch{{ !empty($file) ? $file->id : '_record' }}" {{ (!empty($file) and ($file->check_previous_parts or !empty($file->access_after_day))) ? 'checked' : ''  }}>
+                                        <label class="custom-control-label" for="SequenceContentSwitch{{ !empty($file) ? $file->id : '_record' }}"></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="js-sequence-content-inputs pl-5 {{ (!empty($file) and ($file->check_previous_parts or !empty($file->access_after_day))) ? '' : 'd-none' }}">
+                                <div class="form-group">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <label class="cursor-pointer input-label" for="checkPreviousPartsSwitch{{ !empty($file) ? $file->id : '_record' }}">{{ trans('update.check_previous_parts') }}</label>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" name="ajax[{{ !empty($file) ? $file->id : 'new' }}][check_previous_parts]" class="custom-control-input" id="checkPreviousPartsSwitch{{ !empty($file) ? $file->id : '_record' }}" {{ (empty($file) or $file->check_previous_parts) ? 'checked' : ''  }}>
+                                            <label class="custom-control-label" for="checkPreviousPartsSwitch{{ !empty($file) ? $file->id : '_record' }}"></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="input-label">{{ trans('update.access_after_day') }}</label>
+                                    <input type="number" name="ajax[{{ !empty($file) ? $file->id : 'new' }}][access_after_day]" value="{{ (!empty($file)) ? $file->access_after_day : '' }}" class="js-ajax-access_after_day form-control" placeholder="{{ trans('update.access_after_day_placeholder') }}"/>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        @endif
+
                     </div>
                 </div>
 

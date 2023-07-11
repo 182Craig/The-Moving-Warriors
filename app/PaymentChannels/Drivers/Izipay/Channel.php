@@ -4,11 +4,12 @@ namespace App\PaymentChannels\Drivers\Izipay;
 
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use Illuminate\Http\Request;
 use Lyra\Client as LyraClient;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
     protected $currency;
     protected $client;
@@ -48,7 +49,7 @@ class Channel implements IChannel
         // Send purchase request
         try {
             $store = [
-                "amount" => (int)($order->total_amount * 100), // https://docs.lyra.com/en/rest/V4.0/api/playground/Charge/CreatePayment#amount
+                "amount" => (int)($this->makeAmountByCurrency($order->total_amount, $this->currency) * 100), // https://docs.lyra.com/en/rest/V4.0/api/playground/Charge/CreatePayment#amount
                 "currency" => $this->currency, // worked by this currency => PEN
                 "orderId" => $order->id,
                 'name' => $order->user->full_name,

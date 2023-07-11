@@ -19,7 +19,7 @@ trait InstallmentPurchasesTrait
             ->where('status', '!=', 'paying')
             ->orderBy('created_at', 'desc')
             ->with([
-                'installment' => function ($query) {
+                'selectedInstallment' => function ($query) {
                     $query->with(['steps']);
                     $query->withCount([
                         'steps'
@@ -48,7 +48,7 @@ trait InstallmentPurchasesTrait
             $order->overdue_amount = $overdueOrderInstallments['amount'];
             $order->upcoming_date = !empty($getUpcomingInstallment) ? dateTimeFormat((($getUpcomingInstallment->deadline * 86400) + $order->created_at), 'j M Y') : '';
 
-            $lastStep = $order->installment->steps()->orderBy('deadline','desc')->first();
+            $lastStep = $order->selectedInstallment->steps()->orderBy('deadline','desc')->first();
 
             $order->days_left = 0;
 
@@ -73,13 +73,13 @@ trait InstallmentPurchasesTrait
         $time = time();
         $itemPrice = $order->getItemPrice();
 
-        foreach ($order->installment->steps as $step) {
+        foreach ($order->selectedInstallment->steps as $step) {
             $dueAt = ($step->deadline * 86400) + $order->created_at;
 
             if ($dueAt < $time) {
                 $payment = InstallmentOrderPayment::query()
                     ->where('installment_order_id', $order->id)
-                    ->where('step_id', $step->id)
+                    ->where('selected_installment_step_id', $step->id)
                     ->where('status', 'paid')
                     ->first();
 
@@ -101,10 +101,10 @@ trait InstallmentPurchasesTrait
         $result = null;
         $deadline = 0;
 
-        foreach ($order->installment->steps as $step) {
+        foreach ($order->selectedInstallment->steps as $step) {
             $payment = InstallmentOrderPayment::query()
                 ->where('installment_order_id', $order->id)
-                ->where('step_id', $step->id)
+                ->where('selected_installment_step_id', $step->id)
                 ->where('status', 'paid')
                 ->first();
 
@@ -126,7 +126,7 @@ trait InstallmentPurchasesTrait
             ->where('status', '!=', 'paying')
             ->orderBy('created_at', 'desc')
             ->with([
-                'installment' => function ($query) {
+                'selectedInstallment' => function ($query) {
                     $query->with(['steps']);
                     $query->withCount([
                         'steps'

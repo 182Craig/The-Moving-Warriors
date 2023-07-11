@@ -32,27 +32,16 @@
                 @if($heroSection == "2")
                     <div class="row slider-content align-items-center hero-section2 flex-column-reverse flex-md-row">
                         <div class="col-12 col-md-7 col-lg-6">
-                            <!-- <h1 class="text-secondary font-weight-bold">{{ $heroSectionData['title'] }}</h1> -->
-                            <h1 class="home-banner-title" style="color: #ffffff; font-size: 48px; text-shadow: 2px 2px #000;">
-                            {{ $heroSectionData['title'] }}
-                            </h1>
+                            <h1 class="text-secondary font-weight-bold">{{ $heroSectionData['title'] }}</h1>
+                            <p class="slide-hint text-gray mt-20">{!! nl2br($heroSectionData['description']) !!}</p>
 
-
-                            <!-- <p class="slide-hint text-gray mt-20">{!! nl2br($heroSectionData['description']) !!}</p> -->
-                            <p class="home-banner-paragraph" style="color: #ffffff; font-size: 18px; text-shadow: 2px 2px #000;">
-                             {!! nl2br($heroSectionData['description']) !!}
-                            </p>
-
-
-
-                            <!-- <form action="/search" method="get" class="d-inline-flex mt-30 mt-lg-30 w-100">
+                            <form action="/search" method="get" class="d-inline-flex mt-30 mt-lg-30 w-100">
                                 <div class="form-group d-flex align-items-center m-0 slider-search p-10 bg-white w-100">
                                     <input type="text" name="search" class="form-control border-0 mr-lg-50" placeholder="{{ trans('home.slider_search_placeholder') }}"/>
                                     <button type="submit" class="btn btn-primary rounded-pill">{{ trans('home.find') }}</button>
                                 </div>
-                            </form> -->
+                            </form>
                         </div>
-
                         <div class="col-12 col-md-5 col-lg-6">
                             @if(!empty($heroSectionData['has_lottie']) and $heroSectionData['has_lottie'] == "1")
                                 <lottie-player src="{{ $heroSectionData['hero_vector'] }}" background="transparent" speed="1" class="w-100" loop autoplay></lottie-player>
@@ -624,12 +613,12 @@
                             <p class="font-16 font-weight-normal text-gray mt-10">{{ $findInstructorSection['description'] ?? '' }}</p>
 
                             <div class="mt-35 d-flex align-items-center">
-                                @if(!empty($findInstructorSection['button1']))
-                                    <a href="{{ $findInstructorSection['button1']['link'] }}" class="btn btn-primary">{{ $findInstructorSection['button1']['title'] }}</a>
+                                @if(!empty($findInstructorSection['button1']) and !empty($findInstructorSection['button1']['title']) and !empty($findInstructorSection['button1']['link']))
+                                    <a href="{{ $findInstructorSection['button1']['link'] }}" class="btn btn-primary mr-15">{{ $findInstructorSection['button1']['title'] }}</a>
                                 @endif
 
-                                @if(!empty($findInstructorSection['button2']))
-                                    <a href="{{ $findInstructorSection['button2']['link'] }}" class="btn btn-outline-primary ml-15">{{ $findInstructorSection['button2']['title'] }}</a>
+                                @if(!empty($findInstructorSection['button2']) and !empty($findInstructorSection['button2']['title']) and !empty($findInstructorSection['button2']['link']))
+                                    <a href="{{ $findInstructorSection['button2']['link'] }}" class="btn btn-outline-primary">{{ $findInstructorSection['button2']['title'] }}</a>
                                 @endif
                             </div>
                         </div>
@@ -683,12 +672,12 @@
                             <p class="font-16 font-weight-normal text-gray mt-10">{{ $rewardProgramSection['description'] ?? '' }}</p>
 
                             <div class="mt-35 d-flex align-items-center">
-                                @if(!empty($rewardProgramSection['button1']))
-                                    <a href="{{ $rewardProgramSection['button1']['link'] }}" class="btn btn-primary">{{ $rewardProgramSection['button1']['title'] }}</a>
+                                @if(!empty($rewardProgramSection['button1']) and !empty($rewardProgramSection['button1']['title']) and !empty($rewardProgramSection['button1']['link']))
+                                    <a href="{{ $rewardProgramSection['button1']['link'] }}" class="btn btn-primary mr-15">{{ $rewardProgramSection['button1']['title'] }}</a>
                                 @endif
 
-                                @if(!empty($rewardProgramSection['button2']))
-                                    <a href="{{ $rewardProgramSection['button2']['link'] }}" class="btn btn-outline-primary ml-15">{{ $rewardProgramSection['button2']['title'] }}</a>
+                                @if(!empty($rewardProgramSection['button2']) and !empty($rewardProgramSection['button2']['title']) and !empty($rewardProgramSection['button2']['link']))
+                                    <a href="{{ $rewardProgramSection['button2']['link'] }}" class="btn btn-outline-primary">{{ $rewardProgramSection['button2']['title'] }}</a>
                                 @endif
                             </div>
                         </div>
@@ -706,12 +695,12 @@
                             <p class="font-16 font-weight-normal text-gray mt-10">{{ $becomeInstructorSection['description'] ?? '' }}</p>
 
                             <div class="mt-35 d-flex align-items-center">
-                                @if(!empty($becomeInstructorSection['button1']))
-                                    <a href="{{ empty($authUser) ? '/login' : (($authUser->isUser()) ? $becomeInstructorSection['button1']['link'] : '/panel/financial/registration-packages') }}" class="btn btn-primary">{{ $becomeInstructorSection['button1']['title'] }}</a>
+                                @if(!empty($becomeInstructorSection['button1']) and !empty($becomeInstructorSection['button1']['title']) and !empty($becomeInstructorSection['button1']['link']))
+                                    <a href="{{ empty($authUser) ? '/login' : (($authUser->isUser()) ? $becomeInstructorSection['button1']['link'] : '/panel/financial/registration-packages') }}" class="btn btn-primary mr-15">{{ $becomeInstructorSection['button1']['title'] }}</a>
                                 @endif
 
-                                @if(!empty($becomeInstructorSection['button2']))
-                                    <a href="{{ empty($authUser) ? '/login' : (($authUser->isUser()) ? $becomeInstructorSection['button2']['link'] : '/panel/financial/registration-packages') }}" class="btn btn-outline-primary ml-15">{{ $becomeInstructorSection['button2']['title'] }}</a>
+                                @if(!empty($becomeInstructorSection['button2']) and !empty($becomeInstructorSection['button2']['title']) and !empty($becomeInstructorSection['button2']['link']))
+                                    <a href="{{ empty($authUser) ? '/login' : (($authUser->isUser()) ? $becomeInstructorSection['button2']['link'] : '/panel/financial/registration-packages') }}" class="btn btn-outline-primary">{{ $becomeInstructorSection['button2']['title'] }}</a>
                                 @endif
                             </div>
                         </div>
@@ -756,12 +745,12 @@
                             <p class="font-16 font-weight-normal text-gray mt-10">{{ $forumSection['description'] ?? '' }}</p>
 
                             <div class="mt-35 d-flex align-items-center">
-                                @if(!empty($forumSection['button1']))
-                                    <a href="{{ $forumSection['button1']['link'] }}" class="btn btn-primary">{{ $forumSection['button1']['title'] }}</a>
+                                @if(!empty($forumSection['button1']) and !empty($forumSection['button1']['title']) and !empty($forumSection['button1']['link']))
+                                    <a href="{{ $forumSection['button1']['link'] }}" class="btn btn-primary mr-15">{{ $forumSection['button1']['title'] }}</a>
                                 @endif
 
-                                @if(!empty($forumSection['button2']))
-                                    <a href="{{ $forumSection['button2']['link'] }}" class="btn btn-outline-primary ml-15">{{ $forumSection['button2']['title'] }}</a>
+                                @if(!empty($forumSection['button2']) and !empty($forumSection['button2']['title']) and !empty($forumSection['button2']['link']))
+                                    <a href="{{ $forumSection['button2']['link'] }}" class="btn btn-outline-primary">{{ $forumSection['button2']['title'] }}</a>
                                 @endif
                             </div>
                         </div>

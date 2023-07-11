@@ -131,4 +131,40 @@ class BunnyVideoStream
 
         return false;
     }
+
+    private function getLibraryIdAndVideoIdFromPath($path)
+    {
+        if (empty($path)) {
+            return false;
+        }
+
+        $path = str_replace('https://iframe.mediadelivery.net/embed/', '', $path);
+        $path = explode('?', $path)[0];
+        $path = explode('/', $path);
+
+        if (count($path) < 2) {
+            return false;
+        }
+
+        $libraryId = $path[0];
+        $videoId = $path[1];
+
+        return [
+            'libraryId' => $libraryId,
+            'videoId' => $videoId,
+        ];
+    }
+
+    public function deleteVideo($path)
+    {
+        $getLibraryIdAndVideoIdFromPath = $this->getLibraryIdAndVideoIdFromPath($path);
+
+        if ($getLibraryIdAndVideoIdFromPath) {
+            $libraryId = $getLibraryIdAndVideoIdFromPath['libraryId'];
+            $videoId = $getLibraryIdAndVideoIdFromPath['videoId'];
+
+            $this->bunnyStream->deleteVideo($libraryId, $videoId);
+        }
+
+    }
 }

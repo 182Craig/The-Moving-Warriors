@@ -138,25 +138,22 @@
     $('body').on('change', 'input[name="ticket_id"]', function (e) {
         e.preventDefault();
 
-        const percent = $(this).attr('data-discount');
+        const discountPrice = $(this).attr('data-discount-price');
+
         const realPrice = $('#realPrice');
         const priceWithDiscount = $('#priceWithDiscount');
-        const price = Number(realPrice.attr('data-value'));
-        const specialOfferPercent = Number(realPrice.attr('data-special-offer'));
-
-        const discount = price * (Number(percent) + specialOfferPercent) / 100;
 
         realPrice.removeClass('text-primary').addClass('d-block font-20 text-gray text-decoration-line-through mr-15');
 
         if (priceWithDiscount.length) {
             priceWithDiscount.addClass('d-block');
-            priceWithDiscount.text((price - discount));
+            priceWithDiscount.text(discountPrice);
         } else {
             realPrice.removeClass('d-block');
 
-            var html = '<span id="priceWithDiscount"\n' +
+            var html = '<span\n' +
                 'class="font-30 text-primary">\n' +
-                (price - discount) +
+                discountPrice +
                 '</span>';
 
             realPrice.parent().append(html);

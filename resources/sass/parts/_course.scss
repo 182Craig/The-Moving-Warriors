@@ -156,6 +156,10 @@
     p {
         color: $gray;
     }
+
+    img {
+        max-width: 100% !important;
+    }
 }
 
 .accordion-row {

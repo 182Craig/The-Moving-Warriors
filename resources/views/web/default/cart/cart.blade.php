@@ -44,6 +44,7 @@
                                     <div class="image-box">
                                         @php
                                             $cartItemInfo = $cart->getItemInfo();
+                                            $cartTaxType = !empty($cartItemInfo['isProduct']) ? 'store' : 'general';
                                         @endphp
                                         <img src="{{ $cartItemInfo['imgPath'] }}" class="img-cover" alt="user avatar">
                                     </div>
@@ -96,10 +97,10 @@
                             <span class="text-gray d-inline-block d-md-none">{{ trans('public.price') }} :</span>
 
                             @if(!empty($cartItemInfo['discountPrice']))
-                                <span class="text-gray text-decoration-line-through mx-10 mx-md-0">{{ handlePrice($cartItemInfo['price'], true, true, false, null, true) }}</span>
-                                <span class="font-20 text-primary mt-0 mt-md-5 font-weight-bold">{{ handlePrice($cartItemInfo['discountPrice'], true, true, false, null, true) }}</span>
+                                <span class="text-gray text-decoration-line-through mx-10 mx-md-0">{{ handlePrice($cartItemInfo['price'], true, true, false, null, true, $cartTaxType) }}</span>
+                                <span class="font-20 text-primary mt-0 mt-md-5 font-weight-bold">{{ handlePrice($cartItemInfo['discountPrice'], true, true, false, null, true, $cartTaxType) }}</span>
                             @else
-                                <span class="font-20 text-primary mt-0 mt-md-5 font-weight-bold">{{ handlePrice($cartItemInfo['price'], true, true, false, null, true) }}</span>
+                                <span class="font-20 text-primary mt-0 mt-md-5 font-weight-bold">{{ handlePrice($cartItemInfo['price'], true, true, false, null, true, $cartTaxType) }}</span>
                             @endif
 
                             @if(!empty($cartItemInfo['quantity']))

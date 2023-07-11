@@ -36,13 +36,13 @@ trait InstallmentOverdueTrait
         $time = time();
 
         $query = InstallmentOrder::query()
-            ->join('installments', 'installment_orders.installment_id', 'installments.id')
-            ->join('installment_steps', 'installments.id', 'installment_steps.installment_id')
-            ->leftJoin('installment_order_payments', 'installment_order_payments.step_id', 'installment_steps.id')
-            ->select('installment_orders.*', 'installment_steps.amount', 'installment_steps.amount_type',
-                DB::raw('((installment_steps.deadline * 86400) + installment_orders.created_at) as overdue_date')
+            ->join('selected_installments', 'installment_orders.id', 'selected_installments.installment_order_id')
+            ->join('selected_installment_steps', 'selected_installments.id', 'selected_installment_steps.selected_installment_id')
+            ->leftJoin('installment_order_payments', 'installment_order_payments.selected_installment_step_id', 'selected_installment_steps.id')
+            ->select('installment_orders.*', 'selected_installment_steps.amount', 'selected_installment_steps.amount_type',
+                DB::raw('((selected_installment_steps.deadline * 86400) + installment_orders.created_at) as overdue_date')
             )
-            ->whereRaw("((installment_steps.deadline * 86400) + installment_orders.created_at) < {$time}")
+            ->whereRaw("((selected_installment_steps.deadline * 86400) + installment_orders.created_at) < {$time}")
             ->where(function ($query) { // Where Doesnt Have payment
                 $query->whereRaw("installment_order_payments.id < 1");
                 $query->orWhereRaw("installment_order_payments.id is null");
@@ -83,22 +83,22 @@ trait InstallmentOverdueTrait
         $time = time();
 
         $query = InstallmentOrder::query()
-            ->join('installments', 'installment_orders.installment_id', 'installments.id')
-            ->join('installment_steps', 'installments.id', 'installment_steps.installment_id')
-            ->leftJoin('installment_order_payments', 'installment_order_payments.step_id', 'installment_steps.id')
-            ->select('installment_orders.*', 'installment_steps.amount', 'installment_steps.amount_type',
-                DB::raw('((installment_steps.deadline * 86400) + installment_orders.created_at) as overdue_date'),
+            ->join('selected_installments', 'installment_orders.id', 'selected_installments.installment_order_id')
+            ->join('selected_installment_steps', 'selected_installments.id', 'selected_installment_steps.selected_installment_id')
+            ->leftJoin('installment_order_payments', 'installment_order_payments.selected_installment_step_id', 'selected_installment_steps.id')
+            ->select('installment_orders.*', 'selected_installment_steps.amount', 'selected_installment_steps.amount_type',
+                DB::raw('((selected_installment_steps.deadline * 86400) + installment_orders.created_at) as overdue_date'),
                 DB::raw('installment_order_payments.created_at as paid_at'),
-                DB::raw('installment_steps.deadline as deadline')
+                DB::raw('selected_installment_steps.deadline as deadline')
             )
-            ->whereRaw("((installment_steps.deadline * 86400) + installment_orders.created_at) < {$time}")
+            ->whereRaw("((selected_installment_steps.deadline * 86400) + installment_orders.created_at) < {$time}")
             ->where('installment_orders.status', 'open')
             ->where(function ($query) {
                 $query->where(function ($query) { // Where Doesnt Have payment
                     $query->whereRaw("installment_order_payments.id < 1");
                     $query->orWhereRaw("installment_order_payments.id is null");
                 });
-                $query->orWhereRaw('installment_order_payments.created_at > ((installment_steps.deadline * 86400) + installment_orders.created_at)');
+                $query->orWhereRaw('installment_order_payments.created_at > ((selected_installment_steps.deadline * 86400) + installment_orders.created_at)');
             })
             ->orderBy('overdue_date', 'asc');
 

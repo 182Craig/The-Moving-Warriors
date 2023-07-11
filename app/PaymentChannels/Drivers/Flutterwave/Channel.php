@@ -4,11 +4,12 @@ namespace App\PaymentChannels\Drivers\Flutterwave;
 
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use Illuminate\Http\Request;
 use KingFlamez\Rave\Facades\Rave as FlutterWave;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
 
     /**
@@ -22,10 +23,10 @@ class Channel implements IChannel
 
     public function paymentRequest(Order $order)
     {
-        $user = $order->user;
-        $price = $order->total_amount;
-        $generalSettings = getGeneralSettings();
         $currency = currency();
+        $user = $order->user;
+        $price = $this->makeAmountByCurrency($order->total_amount, $currency);
+        $generalSettings = getGeneralSettings();
 
         $reference = FlutterWave::generateReference();
 

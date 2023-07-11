@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 $prefix = getAdminPanelUrlPrefix();
 
-Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => 'web'], function () {
+Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web',  'admin_locale']], function () use ($prefix) {
 
     // Admin Auth Routes
     Route::get('login', 'LoginController@showLoginForm');
@@ -17,10 +17,10 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => 'web'
     Route::post('/reset-password', 'ResetPasswordController@updatePassword');
 
     // Captcha
-    Route::group(['prefix' => 'captcha'], function () {
-        Route::post('create', function () {
+    Route::group(['prefix' => 'captcha'], function () use ($prefix) {
+        Route::post('create', function () use ($prefix) {
             $path = captcha_src('flat');
-            $path = str_replace('/captcha', '/admin/captcha', $path);
+            $path = str_replace('/captcha', "/$prefix/captcha", $path);
 
             $response = ['status' => 'success', 'captcha_src' => $path];
 
@@ -660,6 +660,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => 'web'
                 Route::post('/database', 'UpdateController@databaseUpdate');
             });
 
+            Route::get('/reset-users-login-count', 'SettingsController@resetUsersLoginCount');
             Route::get('/{page}', 'SettingsController@page');
             Route::post('/{name}', 'SettingsController@store');
             Route::post('/seo_metas/store', 'SettingsController@storeSeoMetas');
@@ -1021,6 +1022,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => 'web'
                 Route::get('/{id}/edit', 'CashbackRuleController@edit');
                 Route::post('/{id}/update', 'CashbackRuleController@update');
                 Route::get('/{id}/delete', 'CashbackRuleController@delete');
+                Route::get('/{id}/statusToggle', 'CashbackRuleController@statusToggle');
             });
         });
 

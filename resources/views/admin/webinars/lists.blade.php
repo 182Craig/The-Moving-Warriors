@@ -238,7 +238,7 @@
                         </div>
 
                         <div class="card-body">
-                            <div>
+                            <div class="table-responsive">
                                 <table class="table table-striped font-14 ">
                                     <tr>
                                         <th>{{trans('admin/main.id')}}</th>

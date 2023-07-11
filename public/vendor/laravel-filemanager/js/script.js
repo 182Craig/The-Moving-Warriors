@@ -208,6 +208,7 @@ function toggleActions() {
     .length === 0;
 
   $('[data-action=use]').toggleClass('d-none', !(many_selected && only_file));
+  $('[data-action=rename]').toggleClass('d-none', !one_selected);
   $('[data-action=preview]').toggleClass('d-none', !(many_selected && only_file));
   $('[data-action=move]').toggleClass('d-none', !many_selected);
   $('[data-action=download]').toggleClass('d-none', !(many_selected && only_file));
@@ -529,12 +530,31 @@ function createFolder(folder_name) {
 // ==         File Actions         ==
 // ==================================
 
+function rename(item) {
+  dialog(lang['message-rename'], item.name, function (new_name) {
+    performLfmRequest('rename', {
+      file: item.name,
+      new_name: new_name
+    }).done(refreshFoldersAndItems);
+  });
+}
+
 function trash(items) {
   notify(lang['message-delete'], function () {
     performLfmRequest('delete', {
       items: items.map(function (item) { return item.name; })
     }).done(refreshFoldersAndItems)
   });
+}
+
+function crop(item) {
+  performLfmRequest('crop', {img: item.name})
+    .done(hideNavAndShowEditor);
+}
+
+function resize(item) {
+  performLfmRequest('resize', {img: item.name})
+    .done(hideNavAndShowEditor);
 }
 
 function download(items) {

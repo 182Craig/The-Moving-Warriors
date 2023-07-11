@@ -4,6 +4,7 @@ namespace App\PaymentChannels\Drivers\MercadoPago;
 
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use Illuminate\Http\Request;
 use MercadoPago\SDK as Mercado;
@@ -11,7 +12,7 @@ use MercadoPago\Preference as MercadoPreference;
 use MercadoPago\Item as MercadoItem;
 use MercadoPago\Payer as MercadoPagoPayer;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
     protected $currency;
     protected $public_key;
@@ -59,7 +60,7 @@ class Channel implements IChannel
             $item->id = $orderItem->id;
             $item->title = "item " . $orderItem->id;
             $item->quantity = 1;
-            $item->unit_price = $orderItem->total_amount;
+            $item->unit_price = $this->makeAmountByCurrency($orderItem->total_amount, $this->currency);
             $item->currency_id = $this->currency;
 
             $items[] = $item;

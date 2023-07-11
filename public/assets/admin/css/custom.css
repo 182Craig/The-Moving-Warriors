@@ -1248,6 +1248,7 @@ li {
 
 .chat-box .chat-content .chat-item .chat-details .chat-text {
     text-align: left;
+    white-space: pre-wrap;
 }
 
 .rtl .chat-box .chat-content .chat-item .chat-details .chat-text {
@@ -1266,4 +1267,8 @@ li {
 .custom-inv-fck {
     position: absolute;
     bottom: -26px
+}
+
+.white-space-pre-wrap {
+    white-space: pre-wrap;
 }

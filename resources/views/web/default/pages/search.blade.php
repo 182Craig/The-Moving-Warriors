@@ -14,7 +14,7 @@
                 <div class="row h-100 align-items-center justify-content-center text-center">
                     <div class="col-12 col-md-9 col-lg-7">
                         <div class="top-search-form">
-                            <h1 class="text-white font-30">{!! nl2br(trans('site.result_find',['count' => $resultCount , 'search' => request()->get('search')])) !!}</h1>
+                            <h1 class="text-white font-30 white-space-pre-wrap">{{ trans('site.result_find',['count' => $resultCount , 'search' => request()->get('search')]) }}</h1>
 
                             <div class="search-input bg-white p-10 flex-grow-1">
                                 <form action="/search" method="get">
@@ -116,7 +116,7 @@
                     <div class="col-12 col-md-9 col-lg-7">
                         <div class="d-flex align-items-center flex-column mt-30 text-center w-100">
                             <h2>{{ trans('site.no_result_search') }}</h2>
-                            <p class="mt-5 text-center">{!! trans('site.no_result_search_hint',['search' => request()->get('search')]) !!}</p>
+                            <p class="mt-5 text-center white-space-pre-wrap">{{ trans('site.no_result_search_hint',['search' => request()->get('search')]) }}</p>
 
                             <div class="search-input bg-white p-10 mt-20 flex-grow-1 shadow-sm rounded-pill w-100">
                                 <form action="/search" method="get">

@@ -14,17 +14,17 @@
 
                 <div class="form-group">
                     <label>{{ trans('admin/main.site_name') }}</label>
-                    <input type="text" name="" value="{{ (!empty($itemValue) and !empty($itemValue['site_name'])) ? $itemValue['site_name'] : old('site_name') }}" class="form-control "/>
+                    <input type="text" name="value[site_name]" value="{{ (!empty($itemValue) and !empty($itemValue['site_name'])) ? $itemValue['site_name'] : old('site_name') }}" class="form-control "/>
                 </div>
 
                 <div class="form-group">
                     <label>{{ trans('admin/main.site_email') }}</label>
-                    <input type="text" name="" value="{{ (!empty($itemValue) and !empty($itemValue['site_email'])) ? $itemValue['site_email'] : old('site_email') }}" class="form-control "/>
+                    <input type="text" name="value[site_email]" value="{{ (!empty($itemValue) and !empty($itemValue['site_email'])) ? $itemValue['site_email'] : old('site_email') }}" class="form-control "/>
                 </div>
 
                 <div class="form-group">
                     <label>{{ trans('admin/main.site_phone') }}</label>
-                    <input type="text" name="" value="{{ (!empty($itemValue) and !empty($itemValue['site_phone'])) ? $itemValue['site_phone'] : old('site_phone') }}" class="form-control "/>
+                    <input type="text" name="value[site_phone]" value="{{ (!empty($itemValue) and !empty($itemValue['site_phone'])) ? $itemValue['site_phone'] : old('site_phone') }}" class="form-control "/>
                 </div>
 
                 <div class="form-group">

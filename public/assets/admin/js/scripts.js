@@ -139,7 +139,7 @@ $(function () {
         minHeight: $(window).outerHeight() - 108
     })
 
-    $(".nav-collapse-toggle").on('click',function () {
+    $(".nav-collapse-toggle").on('click', function () {
         $(this).parent().find('.navbar-nav').toggleClass('show');
         return false;
     });
@@ -186,7 +186,7 @@ $(function () {
         }
     }
 
-    $("[data-toggle='sidebar']").on('click',function () {
+    $("[data-toggle='sidebar']").on('click', function () {
 
         var body = $("body"),
             w = $(window);
@@ -305,7 +305,7 @@ $(function () {
         toggleLayout();
     });
 
-    $("[data-toggle='search']").on('click',function () {
+    $("[data-toggle='search']").on('click', function () {
         var body = $("body");
 
         if (body.hasClass('search-gone')) {
@@ -398,7 +398,7 @@ $(function () {
             follow_text = 'Follow',
             unfollow_text = 'Following';
 
-        me.on('click',function () {
+        me.on('click', function () {
             if (me.hasClass('following-btn')) {
                 me.removeClass('btn-danger');
                 me.removeClass('following-btn');
@@ -423,7 +423,7 @@ $(function () {
         var me = $(this),
             target = me.data('dismiss');
 
-        me.on('click',function () {
+        me.on('click', function () {
             $(target).fadeOut(function () {
                 $(target).remove();
             });
@@ -436,7 +436,7 @@ $(function () {
         var me = $(this),
             target = me.data('collapse');
 
-        me.on('click',function () {
+        me.on('click', function () {
             $(target).collapse('toggle');
             $(target).on('shown.bs.collapse', function (e) {
                 e.stopPropagation();
@@ -487,7 +487,7 @@ $(function () {
     $("[data-tab]").each(function () {
         var me = $(this);
 
-        me.on('click',function () {
+        me.on('click', function () {
             if (!me.hasClass('active')) {
                 var tab_group = $('[data-tab-group="' + me.data('tab') + '"]'),
                     tab_group_active = $('[data-tab-group="' + me.data('tab') + '"].active'),
@@ -504,7 +504,7 @@ $(function () {
     });
 
     // Bootstrap 4 Validation
-    $(".needs-validation").on('submit',function () {
+    $(".needs-validation").on('submit', function () {
         var form = $(this);
         if (form[0].checkValidity() === false) {
             event.preventDefault();
@@ -517,7 +517,7 @@ $(function () {
     $(".alert-dismissible").each(function () {
         var me = $(this);
 
-        me.find('.close').on('click',function () {
+        me.find('.close').on('click', function () {
             me.alert('close');
         });
     });
@@ -535,7 +535,7 @@ $(function () {
     });
 
     // Slide Toggle
-    $('[data-toggle-slide]').on('click',function () {
+    $('[data-toggle-slide]').on('click', function () {
         let target = $(this).data('toggle-slide');
 
         $(target).slideToggle();
@@ -543,7 +543,7 @@ $(function () {
     });
 
     // Dismiss modal
-    $("[data-dismiss=modal]").on('click',function () {
+    $("[data-dismiss=modal]").on('click', function () {
         $(this).closest('.modal').modal('hide');
 
         return false;
@@ -664,3 +664,59 @@ $(function () {
         });
     }
 })(jQuery)
+
+
+var lfm = function (options, cb) {
+    var route_prefix = (options && options.prefix) ? options.prefix : '/laravel-filemanager';
+    window.open(route_prefix + '?type=' + options.type || 'file', 'FileManager', 'width=900,height=600');
+    window.SetUrl = cb;
+};
+
+var LFMButton = function (context) {
+    var ui = $.summernote.ui;
+
+    var button = ui.button({
+        contents: '<i class="note-icon-picture"></i> ',
+        tooltip: 'Insert image with filemanager',
+        click: function () {
+
+            lfm({type: 'file', prefix: '/laravel-filemanager'}, function (lfmItems, path) {
+                lfmItems.forEach(function (lfmItem) {
+                    context.invoke('insertImage', lfmItem.url);
+                });
+            });
+
+        }
+    });
+    return button.render();
+};
+
+window.makeSummernote = function ($content, cardHeight = null, onChange = undefined) {
+    const height = cardHeight ? cardHeight : ($content.attr('data-height') ? $content.attr('data-height') : 250);
+
+    $content.summernote({
+        dialogsInBody: true,
+        tabsize: 2,
+        height: height,
+        placeholder: $content.attr('placeholder'),
+        fontNames: [],
+        callbacks: {
+            onChange: onChange
+        },
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'underline', 'clear']],
+            ['fontname', ['fontname']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'video']],
+            ['view', ['codeview', 'help']],
+            ['popovers', ['lfm']],
+            ['paperSize', ['paperSize']], // The Button
+        ],
+        buttons: {
+            lfm: LFMButton
+        }
+    });
+}

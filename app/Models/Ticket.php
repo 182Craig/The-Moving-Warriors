@@ -54,4 +54,19 @@ class Ticket extends Model implements TranslatableContract
 
         return $title;
     }
+
+    public function getPriceWithDiscount($price, $activeSpecialOffer = null)
+    {
+        $percent = $this->discount;
+
+        if (!empty($activeSpecialOffer)) {
+            $percent = $percent + $activeSpecialOffer->percent;
+        }
+
+        if ($percent > 0) {
+            $price = $price - ($price * $percent / 100);
+        }
+
+        return $price;
+    }
 }

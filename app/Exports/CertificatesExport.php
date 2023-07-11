@@ -49,9 +49,9 @@ class CertificatesExport implements FromCollection, WithHeadings, WithMapping
             $certificate->id,
             $certificate->quiz->title,
             $certificate->quiz->webinar->title,
-            $certificate->student->full_name,
+            $certificate->student ? $certificate->student->full_name : trans('update.deleted_user'),
             $certificate->quiz->teacher->full_name,
-            $certificate->quizzesResult->user_grade,
+            $certificate->quizzesResult ? $certificate->quizzesResult->user_grade : '-',
             dateTimeFormat($certificate->created_at, 'j F Y'),
         ];
     }

@@ -91,7 +91,7 @@ class FileController extends Controller
         if (!empty($webinar)) {
             $user = $webinar->creator;
 
-            $volumeMatches = [''];
+            $volume = 0;
             $fileInfos = null;
 
             if ($data['storage'] == 'upload_archive') {
@@ -106,12 +106,13 @@ class FileController extends Controller
                     ], 422);
                 }
 
+                $volume = convertToMB($fileInfos['size'] ?? 0);
                 $fileInfos['extension'] = 'archive';
                 $data['interactive_file_path'] = $this->handleUnZipFile($data, $user->id);
 
             } elseif ($data['storage'] == 'upload') {
                 $uploadFile = $this->fileInfo($data['file_path']);
-                $data['volume'] = $uploadFile['size'];
+                $volume = convertToMB($uploadFile['size'] ?? 0);
             } elseif (in_array($data['storage'], ['s3', 'secure_host'])) {
                 $data['volume'] = $request->file('s3_file')->getSize();;
 
@@ -127,9 +128,9 @@ class FileController extends Controller
 
                 $data['file_path'] = $result['path'];
                 $fileInfos['extension'] = $data['file_type'];
-                $fileInfos['size'] = $data['volume'];
+                $volume = convertToMB(($data['volume'] ?? 0));
             } else {
-                preg_match('!\d+!', $data['volume'], $volumeMatches);
+                $volume = !empty($data['volume']) ? $data['volume'] : 0; // input is MB
             }
 
             $file = File::create([
@@ -137,7 +138,7 @@ class FileController extends Controller
                 'webinar_id' => $data['webinar_id'],
                 'chapter_id' => $data['chapter_id'],
                 'file' => $data['file_path'],
-                'volume' => formatSizeUnits(!empty($fileInfos) ? $fileInfos['size'] : $data['volume']),
+                'volume' => $volume,
                 'file_type' => !empty($fileInfos) ? $fileInfos['extension'] : $data['file_type'],
                 'accessibility' => $data['accessibility'],
                 'storage' => $data['storage'],
@@ -265,7 +266,7 @@ class FileController extends Controller
             $data['access_after_day'] = null;
         }
 
-        $volumeMatches = ['0'];
+        $volume = 0;
         $fileInfos = null;
 
         $webinar = Webinar::find($data['webinar_id']);
@@ -285,44 +286,38 @@ class FileController extends Controller
                     ], 422);
                 }
 
+                $volume = convertToMB($fileInfos['size'] ?? 0);
                 $fileInfos['extension'] = 'archive';
                 $data['interactive_file_path'] = $this->handleUnZipFile($data, $file->creator_id);
 
             } elseif ($data['storage'] == 'upload') {
                 $uploadFile = $this->fileInfo($data['file_path']);
-                $data['volume'] = $uploadFile['size'];
-            } elseif ($data['storage'] == 's3') {
+                $volume = convertToMB($uploadFile['size'] ?? 0);
+            } elseif (in_array($data['storage'], ['s3', 'secure_host'])) {
+
                 if (!empty($data['s3_file'])) {
-                    $data['volume'] = $request->file('s3_file')->getSize();;
-                    $result = $this->uploadFileToS3($data['s3_file'], $file->creator_id);
+                    $data['volume'] = $request->file('s3_file')->getSize();
+                    $fileInfos['real_size'] = formatSizeUnits($data['volume']);
+
+                    if ($data['storage'] == 's3') {
+                        $result = $this->uploadFileToS3($data['s3_file'], $file->creator_id);
+                    } else {
+                        $result = $this->uploadFileToBunny($webinar, $data['s3_file']);
+                    }
 
                     if (!$result['status']) {
                         return $result['path'];
                     }
 
                     $data['file_path'] = $result['path'];
-                }
-
-                $fileInfos['extension'] = $data['file_type'];
-                $fileInfos['size'] = $data['volume'];
-            } elseif (in_array($data['storage'], ['s3', 'secure_host'])) {
-                $data['volume'] = $request->file('s3_file')->getSize();;
-
-                if ($data['storage'] == 's3') {
-                    $result = $this->uploadFileToS3($data['s3_file'], $file->creator_id);
                 } else {
-                    $result = $this->uploadFileToBunny($webinar, $data['s3_file']);
+                    $fileInfos['real_size'] = $data['volume'];
                 }
 
-                if (!$result['status']) {
-                    return $result['path'];
-                }
-
-                $data['file_path'] = $result['path'];
                 $fileInfos['extension'] = $data['file_type'];
-                $fileInfos['size'] = $data['volume'];
+                $volume = convertToMB(($data['volume'] ?? 0));
             } else {
-                preg_match('!\d+!', $data['volume'], $volumeMatches);
+                $volume = !empty($data['volume']) ? $data['volume'] : 0; // input is MB
             }
 
 
@@ -332,7 +327,7 @@ class FileController extends Controller
             $file->update([
                 'chapter_id' => $data['chapter_id'],
                 'file' => $data['file_path'],
-                'volume' => formatSizeUnits(!empty($fileInfos) ? $fileInfos['size'] : $data['volume']),
+                'volume' => $volume,
                 'file_type' => !empty($fileInfos) ? $fileInfos['extension'] : $data['file_type'],
                 'accessibility' => $data['accessibility'],
                 'storage' => $data['storage'],
@@ -359,12 +354,12 @@ class FileController extends Controller
                 'description' => $data['description'],
             ]);
 
-            WebinarChapterItem::where('user_id', $file->creator_id)
+            $checkWebinarChapterItem = WebinarChapterItem::where('user_id', $file->creator_id)
                 ->where('item_id', $file->id)
                 ->where('type', WebinarChapterItem::$chapterFile)
-                ->delete();
+                ->first();
 
-            if (!empty($file->chapter_id)) {
+            if (!empty($file->chapter_id) and empty($checkWebinarChapterItem)) {
                 WebinarChapterItem::makeItem($file->creator_id, $file->chapter_id, $file->id, WebinarChapterItem::$chapterFile);
             }
 
@@ -510,6 +505,13 @@ class FileController extends Controller
             ->first();
 
         if (!empty($file)) {
+
+            if ($file->storage == "secure_host") {
+                $bunnyVideoStream = new BunnyVideoStream();
+                $bunnyVideoStream->deleteVideo($file->file);
+            }
+
+
             WebinarChapterItem::where('user_id', $file->creator_id)
                 ->where('item_id', $file->id)
                 ->where('type', WebinarChapterItem::$chapterFile)

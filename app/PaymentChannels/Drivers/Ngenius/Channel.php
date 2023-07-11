@@ -4,10 +4,11 @@ namespace App\PaymentChannels\Drivers\Ngenius;
 
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use Illuminate\Http\Request;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
     protected $currency;
     protected $order_session_key;
@@ -34,7 +35,7 @@ class Channel implements IChannel
 
         $payment->amount = new \stdClass();
         $payment->amount->currencyCode = $this->currency; // Payment currency ('AED' only for now)
-        $payment->amount->value = $order->total_amount; // Minor units (1000 = 10.00 AED)
+        $payment->amount->value = $this->makeAmountByCurrency($order->total_amount, $this->currency); // Minor units (1000 = 10.00 AED)
 
         $payment->language = "en"; // Payment page language ('en' or 'ar' only)
         $payment->merchantOrderReference = time(); // Payment page language ('en' or 'ar' only)

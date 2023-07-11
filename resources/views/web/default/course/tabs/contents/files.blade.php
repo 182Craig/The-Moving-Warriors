@@ -40,7 +40,7 @@
                 <div class="d-flex align-items-center">
                     <div class="d-flex align-items-center text-gray text-center font-14 mr-20">
                         <i data-feather="download-cloud" width="18" height="18" class="text-gray mr-5"></i>
-                        <span class="line-height-1">{{ ($file->volume > 0) ? $file->volume : '-' }}</span>
+                        <span class="line-height-1">{{ ($file->volume > 0) ? $file->getVolume() : '-' }}</span>
                     </div>
                 </div>
 

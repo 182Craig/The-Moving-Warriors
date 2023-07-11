@@ -139,6 +139,7 @@ class BundleController extends Controller
         $sales = Sale::where('type', 'bundle')
             ->where('bundle_id', $bundle->id)
             ->whereNull('refund_at')
+            ->whereHas('buyer')
             ->with([
                 'buyer' => function ($query) {
                     $query->select('id', 'full_name', 'email', 'mobile');

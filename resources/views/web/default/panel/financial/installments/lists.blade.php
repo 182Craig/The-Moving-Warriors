@@ -158,12 +158,12 @@
 
                                         <div class="d-flex align-items-start flex-column mt-20 mr-15">
                                             <span class="stat-title">{{ trans('update.upfront') }}:</span>
-                                            <span class="stat-value">{{ !empty($order->installment->upfront) ? handlePrice($order->installment->getUpfront($itemPrice)) : '-' }}</span>
+                                            <span class="stat-value">{{ !empty($order->selectedInstallment->upfront) ? handlePrice($order->selectedInstallment->getUpfront($itemPrice)) : '-' }}</span>
                                         </div>
 
                                         <div class="d-flex align-items-start flex-column mt-20 mr-15">
                                             <span class="stat-title">{{ trans('update.total_installments') }}:</span>
-                                            <span class="stat-value">{{ trans('update.total_parts_count', ['count' => $order->installment->steps_count]) }} ({{ handlePrice($order->installment->totalPayments($itemPrice, false)) }})</span>
+                                            <span class="stat-value">{{ trans('update.total_parts_count', ['count' => $order->selectedInstallment->steps_count]) }} ({{ handlePrice($order->selectedInstallment->totalPayments($itemPrice, false)) }})</span>
                                         </div>
 
                                         @if($order->status == "open" or $order->status == "pending_verification")

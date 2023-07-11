@@ -1,27 +1,9 @@
 (function () {
     "use strict";
 
-    function handleSummernote($el) {
-        $el.summernote({
-            tabsize: 2,
-            height: 280,
-            placeholder: $el.attr('placeholder'),
-            dialogsInBody: true,
-            toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'underline', 'clear']],
-                ['fontname', ['fontname']],
-                ['color', ['color']],
-                ['para', ['paragraph']],
-                ['table', ['table']],
-                ['insert', ['link', 'picture', 'video']],
-                ['view', ['fullscreen', 'codeview', 'help']],
-            ],
-        });
-    }
 
-    if ($('#summernote').length) {
-        handleSummernote($('#summernote'));
+    if (jQuery().summernote) {
+        makeSummernote($('#summernote'), 280)
     }
 
     $('body').on('click', '.panel-file-manager', function (e) {
@@ -327,7 +309,10 @@
                     showConfirmButton: false,
                     width: '60rem',
                     onOpen: function () {
-                        handleSummernote($('#summernote_' + random));
+
+                        if (jQuery().summernote) {
+                            makeSummernote($('#summernote_' + random), 280)
+                        }
 
                         if (typeof feather !== "undefined") {
                             feather.replace();

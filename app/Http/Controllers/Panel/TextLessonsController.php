@@ -49,9 +49,7 @@ class TextLessonsController extends Controller
         }
 
         if (!empty($webinar) and $webinar->canAccess($user)) {
-            $lessonsCount = TextLesson::where('creator_id', $user->id)
-                ->where('webinar_id', $data['webinar_id'])
-                ->count();
+            $lessonsCount = TextLesson::where('webinar_id', $data['webinar_id'])->count();
 
             $textLesson = TextLesson::create([
                 'creator_id' => $user->id,
@@ -82,7 +80,7 @@ class TextLessonsController extends Controller
                     $this->saveAttachments($textLesson, $attachments);
                 }
 
-                WebinarChapterItem::makeItem($user->id, $textLesson->chapter_id, $textLesson->id, WebinarChapterItem::$chapterTextLesson);
+                WebinarChapterItem::makeItem($textLesson->creator_id, $textLesson->chapter_id, $textLesson->id, WebinarChapterItem::$chapterTextLesson);
             }
 
             return response()->json([
@@ -151,7 +149,7 @@ class TextLessonsController extends Controller
                 ]);
 
                 if ($changeChapter) {
-                    WebinarChapterItem::changeChapter($user->id, $oldChapterId, $textLesson->chapter_id, $textLesson->id, WebinarChapterItem::$chapterTextLesson);
+                    WebinarChapterItem::changeChapter($textLesson->creator_id, $oldChapterId, $textLesson->chapter_id, $textLesson->id, WebinarChapterItem::$chapterTextLesson);
                 }
 
                 TextLessonTranslation::updateOrCreate([

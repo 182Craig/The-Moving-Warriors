@@ -23,7 +23,7 @@ class ReserveMeetingController extends Controller
         $reserveMeetingsQuery = ReserveMeeting::where('user_id', $user->id)
             ->whereNotNull('reserved_at')
             ->whereHas('sale', function ($query) {
-                $query->whereNull('refund_at');
+                //$query->whereNull('refund_at');
             });
 
         $openReserveCount = deepClone($reserveMeetingsQuery)->where('status', \App\models\ReserveMeeting::$open)->count();

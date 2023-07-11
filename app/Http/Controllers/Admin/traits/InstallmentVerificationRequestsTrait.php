@@ -8,6 +8,7 @@ use App\Models\Accounting;
 use App\Models\InstallmentOrder;
 use App\Models\InstallmentOrderPayment;
 use App\Models\InstallmentStep;
+use App\Models\SelectedInstallmentStep;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -28,12 +29,13 @@ trait InstallmentVerificationRequestsTrait
             when status = 'refunded' then 'e'
             end as status_order
         "))
+            ->where('status', '!=', 'paying')
             ->orderBy('status_order', 'asc')
             ->whereHas('installment', function ($query) {
                 $query->where('verification', true);
             })
             ->with([
-                'installment' => function ($query) {
+                'selectedInstallment' => function ($query) {
                     $query->with(['steps']);
                     $query->withCount([
                         'steps'
@@ -83,12 +85,12 @@ trait InstallmentVerificationRequestsTrait
             foreach ($orders as $order) {
                 $itemPrice = $order->getItemPrice();
 
-                $installment = $order->installment;
+                $installment = $order->selectedInstallment;
 
                 $totalAmount += $installment->totalPayments($itemPrice);
 
-                $steps = InstallmentStep::query()
-                    ->where('installment_id', $installment->id)
+                $steps = SelectedInstallmentStep::query()
+                    ->where('selected_installment_id', $installment->id)
                     ->whereDoesntHave('orderPayment')
                     ->get();
 

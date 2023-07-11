@@ -376,4 +376,24 @@ class CashbackRuleController extends Controller
 
         return redirect(getAdminPanelUrl("/cashback/rules"))->with(['toast' => $toastData]);
     }
+
+    public function statusToggle($id)
+    {
+        $this->authorize('admin_cashback_rules');
+
+        $rule = CashbackRule::query()->findOrFail($id);
+
+        $rule->update([
+            'enable' => !$rule->enable
+        ]);
+
+
+        $toastData = [
+            'title' => trans('public.request_success'),
+            'msg' => '',
+            'status' => 'success'
+        ];
+
+        return redirect(getAdminPanelUrl("/cashback/rules"))->with(['toast' => $toastData]);
+    }
 }

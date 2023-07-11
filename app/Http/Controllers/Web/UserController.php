@@ -495,7 +495,7 @@ class UserController extends Controller
     public function makeNewsletter(Request $request)
     {
         $this->validate($request, [
-            'newsletter_email' => 'required|string|email|max:255|unique:newsletters,email'
+            'newsletter_email' => 'required|email|max:255|unique:newsletters,email'
         ]);
 
         $data = $request->all();

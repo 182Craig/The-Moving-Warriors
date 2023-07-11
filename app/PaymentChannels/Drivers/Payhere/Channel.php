@@ -4,11 +4,12 @@ namespace App\PaymentChannels\Drivers\Payhere;
 
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use Illuminate\Http\Request;
 use Instamojo\Instamojo;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
     protected $currency;
     protected $order_session_key;
@@ -36,7 +37,7 @@ class Channel implements IChannel
             'notify_url' => $this->makeCallbackUrl('notify'),
             'order_id' => $order->id,
             'currency' => $this->currency,
-            'amount' => $order->total_amount,
+            'amount' => $this->makeAmountByCurrency($order->total_amount, $this->currency),
             'first_name' => $user->full_name,
             'last_name' => '',
             'email' => $user->email,

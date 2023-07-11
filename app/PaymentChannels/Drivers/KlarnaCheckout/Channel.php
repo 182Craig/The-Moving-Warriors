@@ -4,11 +4,12 @@ namespace App\PaymentChannels\Drivers\KlarnaCheckout;
 
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use Illuminate\Http\Request;
 use Omnipay\Omnipay;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
     protected $currency;
     protected $test_mode;
@@ -45,14 +46,14 @@ class Channel implements IChannel
 
     public function paymentRequest(Order $order)
     {
-        $generalSettings = getGeneralSettings();
-        $user = $order->user;
+        //$generalSettings = getGeneralSettings();
+        //$user = $order->user;
 
         $gateway = $this->makeGateway();
 
 
         $data = [
-            'amount' => $order->total_amount,
+            'amount' => $this->makeAmountByCurrency($order->total_amount, $this->currency),
             'tax_amount' => 0,
             'currency' => $this->currency,
             'locale' => 'SE',
@@ -74,9 +75,9 @@ class Channel implements IChannel
                 'name' => 'Cart item:' . $orderItem->id,
                 'quantity' => 1,
                 'tax_rate' => $orderItem->tax,
-                'price' => $orderItem->amount,
-                'unit_price' => $orderItem->amount,
-                'total_tax_amount' => $orderItem->tax_price,
+                'price' => $this->makeAmountByCurrency($orderItem->amount, $this->currency),
+                'unit_price' => $this->makeAmountByCurrency($orderItem->amount, $this->currency),
+                'total_tax_amount' => $this->makeAmountByCurrency($orderItem->tax_price, $this->currency),
             ];
 
         }

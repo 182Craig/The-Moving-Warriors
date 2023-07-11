@@ -34,7 +34,7 @@
         <div class="col-12 col-md-9 mt-15 mt-md-0">
             <div class="d-flex flex-column justify-content-between h-100">
                 <div class="">
-                    <p class="font-14 text-gray d-block">{!! nl2br(!empty($answer) ? $answer->description : $courseForum->description) !!}</p>
+                    <p class="font-14 text-gray d-block white-space-pre-wrap">{{ !empty($answer) ? $answer->description : $courseForum->description }}</p>
 
                     @if(empty($answer) and !empty($courseForum->attach))
                         <div class="mt-25 d-inline-block">

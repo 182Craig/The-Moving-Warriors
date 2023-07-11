@@ -4,6 +4,7 @@ namespace App\PaymentChannels\Drivers\Paypal;
 
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -21,7 +22,7 @@ use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Exception\PayPalConnectionException;
 use PayPal\Rest\ApiContext;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
     private $_api_context;
     protected $currency;
@@ -57,19 +58,23 @@ class Channel implements IChannel
                     $name = $orderItem->webinar->title;
                 }
 
+                $price = $this->makeAmountByCurrency(($orderItem->total_amount - $orderItem->tax_price), $this->currency);
+
                 $items[] = $item->setName($name)
                     ->setCurrency($this->currency)
                     ->setQuantity(1)
                     ->setSku($orderItem->id) // Similar to `item_number` in Classic API
-                    ->setPrice($orderItem->total_amount - $orderItem->tax_price);
+                    ->setPrice($price);
 
             }
         } else {
+            $price = $this->makeAmountByCurrency($order->total_amount, $this->currency);
+
             $item = new Item();
             $item->setName('charge')
                 ->setCurrency($this->currency)
                 ->setQuantity(1)
-                ->setPrice($order->total_amount);
+                ->setPrice($price);
         }
 
         $itemList = new ItemList();
@@ -78,11 +83,11 @@ class Channel implements IChannel
         $details = new Details();
         $details->setShipping(0)
             ->setTax($order->tax)
-            ->setSubtotal($order->total_amount - $order->tax);
+            ->setSubtotal($this->makeAmountByCurrency(($order->total_amount - $order->tax), $this->currency));
 
         $amount = new Amount();
         $amount->setCurrency($this->currency)
-            ->setTotal($order->total_amount)
+            ->setTotal($this->makeAmountByCurrency($order->total_amount, $this->currency))
             ->setDetails($details);
 
         $transaction = new Transaction();

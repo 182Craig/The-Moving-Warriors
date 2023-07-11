@@ -468,6 +468,7 @@ function localeToCountryCode($code, $revers = false)
         "UZ" => 'UZ',
         "VI" => 'VN',
         "XH" => 'ZA',
+        "KU" => 'KU',
     ];
 
     if ($revers) {
@@ -1982,11 +1983,14 @@ function getAgoraResolutions(): array
 }
 
 
-function getUserCurrencyItem($user = null)
+function getUserCurrencyItem($user = null, $userCurrency = null)
 {
     $multiCurrency = new MultiCurrency();
     $currencies = $multiCurrency->getCurrencies();
-    $userCurrency = currency($user);
+
+    if (empty($userCurrency)) {
+        $userCurrency = currency($user);
+    }
 
     foreach ($currencies as $currencyItem) {
         if ($currencyItem->currency == $userCurrency) {
@@ -2022,7 +2026,7 @@ function curformat($amount)
     return "\$$whole.$decimal";
 }
 
-function handlePriceFormat($price, $decimals = 0, $decimal_separator = '.', $thousands_separator = ''): string
+function handlePriceFormat($price, $decimals = 0, $decimal_separator = '.', $thousands_separator = '')
 {
     if ($price and $price > 0) {
         $format = number_format($price, $decimals, $decimal_separator, $thousands_separator);
@@ -2040,7 +2044,7 @@ function handlePriceFormat($price, $decimals = 0, $decimal_separator = '.', $tho
     return $price;
 }
 
-function handlePrice($price, $showCurrency = true, $format = true, $coursePagePrice = false, $user = null, $showTaxInPrice = false)
+function handlePrice($price, $showCurrency = true, $format = true, $coursePagePrice = false, $user = null, $showTaxInPrice = false, $taxType = 'general')
 {
     $userCurrencyItem = getUserCurrencyItem($user);
     $priceDisplay = getFinancialSettings('price_display') ?? 'only_price';
@@ -2053,13 +2057,25 @@ function handlePrice($price, $showCurrency = true, $format = true, $coursePagePr
 
     if ($priceDisplay != 'only_price') {
         $tax = getFinancialSettings('tax') ?? 0;
+
+        if ($taxType == 'store') {
+            $storeTax = getStoreSettings('store_tax');
+
+            if (isset($storeTax) and is_numeric($storeTax)) {
+                $tax = $storeTax;
+            }
+        }
+
         $tax = convertPriceToUserCurrency($tax, $userCurrencyItem);
 
         if ($tax > 0) {
             $taxPrice = $price * $tax / 100;
 
             if ($priceDisplay == 'total_price') {
-                $price = $price + $taxPrice;
+
+                if ($showTaxInPrice) {
+                    $price = $price + $taxPrice;
+                }
 
                 if ($format) {
                     $price = handlePriceFormat($price, $decimal, $decimalSeparator, $thousandsSeparator);
@@ -2213,4 +2229,23 @@ function getNavbarButton($roleId = null, $forGuest = false)
     return \App\Models\NavbarButton::where('role_id', $roleId)
         ->where('for_guest', $forGuest)
         ->first();
+}
+
+
+function getLeafletApiPath()
+{
+    return "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+    //return 'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+}
+
+
+function convertToMB($size, $unit = 'B')
+{
+    $units = array('B', 'KB', 'MB', 'GB', 'TB');
+    $index = array_search($unit, $units);
+    $bytes = $size * pow(1024, $index);
+
+    $mb_size = $bytes / pow(1024, 2);
+
+    return round($mb_size, 2);
 }

@@ -12,6 +12,7 @@
                 <input type="hidden" name="page" value="financial">
                 <input type="hidden" name="name" value="referral">
 
+
                 <div class="form-group mt-1 custom-switches-stacked">
                     <label class="custom-switch pl-0">
                         <input type="hidden" name="value[content_translate]" value="0">
@@ -20,7 +21,6 @@
                     </label>
                     <div class="text-muted text-small mt-1">Paid Plugin</div>
                 </div>
-
 
                 <div class="form-group custom-switches-stacked">
                     <label class="custom-switch pl-0 d-flex align-items-center">

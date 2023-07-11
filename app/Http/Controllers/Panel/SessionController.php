@@ -101,7 +101,7 @@ class SessionController extends Controller
                     'description' => $data['description'],
                 ]);
 
-                WebinarChapterItem::makeItem($user->id, $session->chapter_id, $session->id, WebinarChapterItem::$chapterSession);
+                WebinarChapterItem::makeItem($session->creator_id, $session->chapter_id, $session->id, WebinarChapterItem::$chapterSession);
             }
 
             if ($data['session_api'] == 'big_blue_button') {
@@ -218,7 +218,7 @@ class SessionController extends Controller
                 ]);
 
                 if ($changeChapter) {
-                    WebinarChapterItem::changeChapter($user->id, $oldChapterId, $session->chapter_id, $session->id, WebinarChapterItem::$chapterSession);
+                    WebinarChapterItem::changeChapter($session->creator_id, $oldChapterId, $session->chapter_id, $session->id, WebinarChapterItem::$chapterSession);
                 }
 
                 SessionTranslation::updateOrCreate([
@@ -389,6 +389,7 @@ class SessionController extends Controller
             $streamRole = 'audience'; // host | audience
             $channelName = "session_$session->id";
             $accountName = "user {$user->id}";
+            $userName = $user->full_name;
             $canAccessError = trans('update.you_cannot_enter_this_session');
 
             if ($user->id == $session->creator_id) {
@@ -451,6 +452,7 @@ class SessionController extends Controller
                     'isHost' => $isHost,
                     'appId' => $appId,
                     'accountName' => $accountName,
+                    'userName' => $userName,
                     'channelName' => $channelName,
                     'rtcToken' => $rtcToken,
                     'rtmToken' => $rtmToken,
@@ -557,16 +559,21 @@ class SessionController extends Controller
             $webinar = Webinar::find($session->webinar_id);
 
             if (!empty($webinar)) {
+                $role = 'participant';
+
                 if ($user->id == $session->creator_id or $webinar->canAccess($user)) {
                     $canAccess = true;
+                    $role = "moderator";
                 } else if ($webinar->checkUserHasBought($user)) {
                     $canAccess = true;
                 }
 
                 if ($canAccess) {
+
                     $data = [
                         'pageTitle' => trans('update.jitsi_live_class'),
-                        'session' => $session
+                        'session' => $session,
+                        'role' => $role,
                     ];
 
                     return view('web.default.course.jitsi.join_live', $data);

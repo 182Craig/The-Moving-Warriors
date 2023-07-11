@@ -1954,6 +1954,8 @@ return [
 "gift_receive_date" => "Received Date",
 "gift_sender" => "Gift Sender",
 "cashback_users" => "Cashback Users",
+"reset_users_login_count" => "Reset users active sessions count",
+
 
 
 ];

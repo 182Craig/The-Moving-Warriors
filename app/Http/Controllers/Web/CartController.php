@@ -362,7 +362,7 @@ class CartController extends Controller
         $taxIsDifferent = (count($cartHasWebinar) or count($cartHasBundle) or count($cartHasMeeting) or count($cartHasInstallmentPayment));
 
         foreach ($carts as $cart) {
-            $orderPrices = $this->handleOrderPrices($cart, $user, $taxIsDifferent);
+            $orderPrices = $this->handleOrderPrices($cart, $user, $taxIsDifferent, $discountCoupon);
             $subTotal += $orderPrices['sub_total'];
             $totalDiscount += $orderPrices['total_discount'];
             $tax = $orderPrices['tax'];
@@ -448,8 +448,10 @@ class CartController extends Controller
 
             if (!empty($order) and $order->total_amount > 0) {
                 $razorpay = false;
+                $isMultiCurrency = !empty(getFinancialCurrencySettings('multi_currency'));
+
                 foreach ($paymentChannels as $paymentChannel) {
-                    if ($paymentChannel->class_name == 'Razorpay' and in_array(currency(), $paymentChannel->currencies)) {
+                    if ($paymentChannel->class_name == 'Razorpay' and (!$isMultiCurrency or in_array(currency(), $paymentChannel->currencies))) {
                         $razorpay = true;
                     }
                 }
@@ -471,6 +473,7 @@ class CartController extends Controller
                     'userCharge' => $user->getAccountingCharge(),
                     'razorpay' => $razorpay,
                     'totalCashbackAmount' => $totalCashbackAmount,
+                    'previousUrl' => url()->previous(),
                 ];
 
                 return view(getTemplate() . '.cart.payment', $data);
@@ -555,7 +558,7 @@ class CartController extends Controller
 
             $allDiscountPrice = $totalDiscount;
             if ($totalCouponDiscount > 0 and $price > 0) {
-                $percent = (($price / $calculate["total"]) * 100);
+                $percent = (($price / $calculate["sub_total"]) * 100);
                 $allDiscountPrice += (($totalCouponDiscount * $percent) / 100);
             }
 
@@ -611,7 +614,7 @@ class CartController extends Controller
         return $user;
     }
 
-    public function handleOrderPrices($cart, $user, $taxIsDifferent = false)
+    public function handleOrderPrices($cart, $user, $taxIsDifferent = false, $discountCoupon = null)
     {
         $seller = $this->getSeller($cart);
         $financialSettings = getFinancialSettings();

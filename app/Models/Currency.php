@@ -3,11 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Cviebrock\EloquentSluggable\Services\SlugService;
-use Cviebrock\EloquentSluggable\Sluggable;
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Astrotomic\Translatable\Translatable;
-use Jorenvh\Share\ShareFacade;
 
 class Currency extends Model
 {

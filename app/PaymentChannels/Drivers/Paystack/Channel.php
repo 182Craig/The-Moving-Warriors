@@ -5,11 +5,12 @@ namespace App\PaymentChannels\Drivers\Paystack;
 use Anand\LaravelPaytmWallet\Facades\PaytmWallet;
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use Illuminate\Http\Request;
 use Unicodeveloper\Paystack\Paystack;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
     protected $currency;
 
@@ -27,7 +28,7 @@ class Channel implements IChannel
         $payStack = new Paystack();
 
         $payStack->getAuthorizationResponse([
-            "amount" => $order->total_amount * 1000,
+            "amount" => $this->makeAmountByCurrency($order->total_amount, $this->currency) * 1000,
             "reference" => $payStack->genTranxRef(),
             "email" => $order->user->email,
             "callback_url" => $this->makeCallbackUrl($order),

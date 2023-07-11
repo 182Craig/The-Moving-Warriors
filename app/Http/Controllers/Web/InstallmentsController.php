@@ -13,6 +13,8 @@ use App\Models\InstallmentOrderPayment;
 use App\Models\Product;
 use App\Models\ProductOrder;
 use App\Models\RegistrationPackage;
+use App\Models\SelectedInstallment;
+use App\Models\SelectedInstallmentStep;
 use App\Models\Subscribe;
 use App\Models\Webinar;
 use Illuminate\Http\Request;
@@ -268,6 +270,9 @@ class InstallmentsController extends Controller
                 /* Attachments */
                 $this->handleAttachments($attachments, $order);
 
+                /* Store Installment Data */
+                $this->handleSelectedInstallment($user, $order, $installment);
+
                 /* Update Product Order */
                 if (!empty($productOrder)) {
                     $productOrder->update([
@@ -292,7 +297,7 @@ class InstallmentsController extends Controller
                         'installment_order_id' => $order->id,
                         'sale_id' => null,
                         'type' => 'upfront',
-                        'step_id' => null,
+                        'selected_installment_step_id' => null,
                         'amount' => $installment->getUpfront($order->getItemPrice()),
                         'status' => 'paying',
                     ], [
@@ -403,6 +408,39 @@ class InstallmentsController extends Controller
             if (!empty($attachmentsInsert)) {
                 InstallmentOrderAttachment::query()->insert($attachmentsInsert);
             }
+        }
+    }
+
+    private function handleSelectedInstallment($user, $order, $installment)
+    {
+        $selected = SelectedInstallment::query()->updateOrCreate([
+            'user_id' => $user->id,
+            'installment_id' => $installment->id,
+            'installment_order_id' => $order->id,
+        ], [
+            'start_date' => $installment->start_date,
+            'end_date' => $installment->end_date,
+            'upfront' => $installment->upfront,
+            'upfront_type' => $installment->upfront_type,
+            'created_at' => time(),
+        ]);
+
+        SelectedInstallmentStep::query()->where('selected_installment_id', $selected->id)->delete();
+
+        $insert = [];
+
+        foreach ($installment->steps as $step) {
+            $insert[] = [
+                'selected_installment_id' => $selected->id,
+                'installment_step_id' => $step->id,
+                'deadline' => $step->deadline,
+                'amount' => $step->amount,
+                'amount_type' => $step->amount_type,
+            ];
+        }
+
+        if (!empty($insert)) {
+            SelectedInstallmentStep::query()->insert($insert);
         }
     }
 

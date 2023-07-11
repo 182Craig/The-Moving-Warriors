@@ -154,6 +154,8 @@
 
                                                 <td>{{ handlePrice($payout->amount) }}</td>
 
+
+                                                @if(!empty($payout->userSelectedBank->bank))
                                                 <td class="">
                                                     @php
                                                         $bank = $payout->userSelectedBank->bank;
@@ -173,7 +175,9 @@
                                                     @endforeach
 
                                                 </td>
-
+                                                @else
+                                                <td>-</td>
+                                                @endif
 
                                                 <td>{{ $payout->user->mobile }}</td>
 
@@ -260,8 +264,8 @@
     <script>
         var payoutDetailsLang = '{{ trans('update.payout_details') }}';
         var closeLang = '{{ trans('public.close') }}';
-
     </script>
+
     <script src="/assets/default/vendors/sweetalert2/dist/sweetalert2.min.js"></script>
     <script src="/assets/default/js/admin/payout.min.js"></script>
 @endpush

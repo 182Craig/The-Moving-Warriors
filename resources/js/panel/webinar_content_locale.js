@@ -45,15 +45,12 @@
                             summernoteTarget.val(value);
                             $('.js-hidden-content-' + item_id).val(value);
 
-                            summernoteTarget.summernote({
-                                tabsize: 2,
-                                height: 400,
-                                callbacks: {
-                                    onChange: function (contents, $editable) {
-                                        $('.js-hidden-content-' + item_id).val(contents);
-                                    }
-                                }
-                            });
+
+                            if (jQuery().summernote) {
+                                makeSummernote(summernoteTarget, 400, function (contents, $editable) {
+                                    $('.js-hidden-content-' + item_id).val(contents);
+                                })
+                            }
                         }
                     }
                 });

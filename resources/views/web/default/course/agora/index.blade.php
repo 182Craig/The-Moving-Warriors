@@ -72,6 +72,7 @@
         var joinedToChannel = '{{ trans('update.joined_the_live') }}';
         var appId = '{{ $appId }}';
         var accountName = '{{ $accountName }}';
+        var userName = '{{ $userName }}';
         var channelName = '{{ $channelName }}';
         var streamRole = '{{ $streamRole }}';
         var redirectAfterLeave = '{{ url('/panel') }}';

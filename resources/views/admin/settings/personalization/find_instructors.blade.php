@@ -51,11 +51,11 @@
                     <div class="row">
                         <div class="col-6">
                             <label>{{ trans('admin/main.title') }}</label>
-                            <input type="text" name="value[button1][title]" value="{{ (!empty($itemValue) and !empty($itemValue['button1'])) ? $itemValue['button1']['title'] : '' }}" class="form-control "/>
+                            <input type="text" name="value[button1][title]" value="{{ (!empty($itemValue) and !empty($itemValue['button1']) and !empty($itemValue['button1']['title'])) ? $itemValue['button1']['title'] : '' }}" class="form-control "/>
                         </div>
                         <div class="col-6">
                             <label>{{ trans('admin/main.link') }}</label>
-                            <input type="text" name="value[button1][link]" value="{{ (!empty($itemValue) and !empty($itemValue['button1'])) ? $itemValue['button1']['link'] : '' }}" class="form-control "/>
+                            <input type="text" name="value[button1][link]" value="{{ (!empty($itemValue) and !empty($itemValue['button1']) and !empty($itemValue['button1']['link'])) ? $itemValue['button1']['link'] : '' }}" class="form-control "/>
                         </div>
                     </div>
                 </div>
@@ -65,11 +65,11 @@
                     <div class="row">
                         <div class="col-6">
                             <label>{{ trans('admin/main.title') }}</label>
-                            <input type="text" name="value[button2][title]" value="{{ (!empty($itemValue) and !empty($itemValue['button2'])) ? $itemValue['button2']['title'] : '' }}" class="form-control "/>
+                            <input type="text" name="value[button2][title]" value="{{ (!empty($itemValue) and !empty($itemValue['button2']) and !empty($itemValue['button2']['title'])) ? $itemValue['button2']['title'] : '' }}" class="form-control "/>
                         </div>
                         <div class="col-6">
                             <label>{{ trans('admin/main.link') }}</label>
-                            <input type="text" name="value[button2][link]" value="{{ (!empty($itemValue) and !empty($itemValue['button2'])) ? $itemValue['button2']['link'] : '' }}" class="form-control "/>
+                            <input type="text" name="value[button2][link]" value="{{ (!empty($itemValue) and !empty($itemValue['button2']) and !empty($itemValue['button2']['link'])) ? $itemValue['button2']['link'] : '' }}" class="form-control "/>
                         </div>
                     </div>
                 </div>

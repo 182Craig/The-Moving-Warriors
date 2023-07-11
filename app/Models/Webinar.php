@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Mixins\Certificate\MakeCertificate;
 use App\User;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Database\Eloquent\Model;
@@ -770,15 +771,24 @@ class Webinar extends Model implements TranslatableContract
 
     public function canAccess($user = null)
     {
+        $result = false;
+
         if (!$user) {
             $user = auth()->user();
         }
 
         if (!empty($user)) {
-            return ($this->creator_id == $user->id or $this->teacher_id == $user->id);
+            if ($this->creator_id == $user->id or $this->teacher_id == $user->id) {
+                $result = true;
+            }
+
+            // Allow Access To Partner Teachers
+            if (!$result and $this->isPartnerTeacher($user->id)) {
+                $result = true;
+            }
         }
 
-        return false;
+        return $result;
     }
 
     public function canSale()
@@ -879,7 +889,19 @@ class Webinar extends Model implements TranslatableContract
         //$nextSession = $this->nextSession();
         $isProgressing = false;
 
-        if ($this->start_date <= time() or (!empty($lastSession) and $lastSession->date > time())) {
+        if (!empty($lastSession)) {
+            $agoraHistory = AgoraHistory::where('session_id', $lastSession->id)
+                ->first();
+
+            if (
+                ($lastSession->session_api != "agora" and $lastSession->date > time()) or
+                ($lastSession->session_api == "agora" and ($lastSession->date > time() and (empty($agoraHistory) or empty($agoraHistory->end_at))))
+            ) {
+                $isProgressing = true;
+            }
+        }
+
+        if ($this->start_date > time()) {
             $isProgressing = true;
         }
 
@@ -1049,4 +1071,23 @@ class Webinar extends Model implements TranslatableContract
             }
         }
     }
+
+    public function makeCourseCertificateForUser($user)
+    {
+        if (!empty($user) and $this->certificate and $this->getProgress(true) >= 100) {
+            $check = Certificate::where('type', 'course')
+                ->where('student_id', $user->id)
+                ->where('webinar_id', $this->id)
+                ->first();
+
+            if (empty($check)) {
+                $makeCertificate = new MakeCertificate();
+                $userCertificate = $makeCertificate->saveCourseCertificate($user, $this);
+
+                $certificateReward = RewardAccounting::calculateScore(Reward::CERTIFICATE);
+                RewardAccounting::makeRewardAccounting($userCertificate->student_id, $certificateReward, Reward::CERTIFICATE, $userCertificate->id, true);
+            }
+        }
+    }
+
 }

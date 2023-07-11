@@ -25,11 +25,13 @@
         const domain = '{{ env('JITSI_LIVE_URL') }}';
         const options = {
             roomName: meeting_id,
+            role: '{{ $role }}',
             parentNode: document.querySelector('#meet'),
 
             userInfo: {
                 email: "{{ $authUser->email }}",
                 displayName: "{{ $authUser->full_name }}",
+                role: '{{ $role }}',
             }
         }
 

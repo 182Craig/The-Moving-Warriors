@@ -25,10 +25,10 @@
             <div class="webinar-price-box mt-15">
                 @if(!empty($product->price) and $product->price > 0)
                     @if($product->getPriceWithActiveDiscountPrice() < $product->price)
-                        <span class="real">{{ handlePrice($product->getPriceWithActiveDiscountPrice()) }}</span>
-                        <span class="off ml-10">{{ handlePrice($product->price) }}</span>
+                        <span class="real">{{ handlePrice($product->getPriceWithActiveDiscountPrice(), true, true, false, null, true, 'store') }}</span>
+                        <span class="off ml-10">{{ handlePrice($product->price, true, true, false, null, true, 'store') }}</span>
                     @else
-                        <span class="real">{{ handlePrice($product->price) }}</span>
+                        <span class="real">{{ handlePrice($product->price, true, true, false, null, true, 'store') }}</span>
                     @endif
                 @else
                     <span class="real font-14">{{ trans('public.free') }}</span>

@@ -7,6 +7,9 @@
         <form action="/set-currency" method="post">
             {{ csrf_field() }}
             <input type="hidden" name="currency" value="{{ $userCurrency }}">
+            @if(!empty($previousUrl))
+                <input type="hidden" name="previous_url" value="{{ $previousUrl }}">
+            @endif
 
             @foreach($currencies as $currencyItem)
                 @if($userCurrency == $currencyItem->currency)

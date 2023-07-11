@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Models\BlogCategory;
 use App\Models\Comment;
+use App\Models\Reward;
+use App\Models\RewardAccounting;
 use App\Models\Translation\BlogTranslation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -97,16 +99,23 @@ class BlogPostsController extends Controller
             'updated_at' => time(),
         ]);
 
-        if ($blog) {
-            BlogTranslation::updateOrCreate([
-                'blog_id' => $blog->id,
-                'locale' => mb_strtolower($data['locale']),
-            ], [
-                'title' => $data['title'],
-                'description' => $data['description'],
-                'meta_description' => strip_tags($data['description']),
-                'content' => $data['content'],
-            ]);
+        if (empty($blog)) {
+            abort(500);
+        }
+
+        BlogTranslation::updateOrCreate([
+            'blog_id' => $blog->id,
+            'locale' => mb_strtolower($data['locale']),
+        ], [
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'meta_description' => strip_tags($data['description']),
+            'content' => $data['content'],
+        ]);
+
+        if ($directPublicationOfBlog) {
+            $createPostReward = RewardAccounting::calculateScore(Reward::CREATE_BLOG_BY_INSTRUCTOR);
+            RewardAccounting::makeRewardAccounting($user->id, $createPostReward, Reward::CREATE_BLOG_BY_INSTRUCTOR, $blog->id, true);
         }
 
         $notifyOptions = [

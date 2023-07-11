@@ -88,7 +88,7 @@
 
                                 <div class="form-group mt-15">
                                     <label class="input-label">{{ trans('public.description') }}</label>
-                                    <textarea id="summernote" name="description" class="summernote form-control @error('description')  is-invalid @enderror" placeholder="{{ trans('admin/main.description_placeholder') }}">{!! old('description')  !!}</textarea>
+                                    <textarea id="summernote" name="description" class="summernote form-control @error('description')  is-invalid @enderror" placeholder="{{ trans('admin/main.description_placeholder') }}">{{ old('description') }}</textarea>
                                     @error('description')
                                     <div class="invalid-feedback">
                                         {{ $message }}

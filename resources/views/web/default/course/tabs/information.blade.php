@@ -30,7 +30,7 @@
     <div class="mt-20">
         <h2 class="section-title after-line">{{ trans('product.Webinar_description') }}</h2>
         <div class="mt-15 course-description">
-            {!! clean($course->description) !!}
+            {!! nl2br($course->description) !!}
         </div>
     </div>
 @endif

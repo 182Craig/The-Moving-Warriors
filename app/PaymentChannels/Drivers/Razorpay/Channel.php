@@ -4,12 +4,13 @@ namespace App\PaymentChannels\Drivers\Razorpay;
 
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use Cassandra\Numeric;
 use Illuminate\Http\Request;
 use Razorpay\Api\Api;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
     protected $currency;
     protected $api_key;

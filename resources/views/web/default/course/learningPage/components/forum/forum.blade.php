@@ -85,7 +85,7 @@
 
                             <span class="d-block font-12 text-gray mt-5">{{ trans('public.by') }} {{ $forum->user->full_name }} {{ trans('public.in') }} {{ dateTimeFormat($forum->created_at, 'j M Y | H:i') }}</span>
 
-                            <p class="d-block font-14 text-gray mt-10">{{ nl2br($forum->description) }}</p>
+                            <p class="d-block font-14 text-gray mt-10 white-space-pre-wrap">{{ $forum->description }}</p>
                         </div>
                     </div>
                 </div>

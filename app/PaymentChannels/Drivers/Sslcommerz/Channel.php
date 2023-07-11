@@ -4,18 +4,19 @@ namespace App\PaymentChannels\Drivers\Sslcommerz;
 
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
     protected $currency;
 
     public function __construct(PaymentChannel $paymentChannel)
     {
-        $this->currency = "BDT";//currency();
+        $this->currency = currency(); // "BDT"
     }
 
     public function paymentRequest(Order $order)
@@ -24,8 +25,8 @@ class Channel implements IChannel
 
         $postData = [];
 
-        $postData['total_amount'] = $order->total_amount; # You cant not pay less than 10
-        $postData['currency'] = "BDT";
+        $postData['total_amount'] = $this->makeAmountByCurrency($order->total_amount, $this->currency); # You cant not pay less than 10
+        $postData['currency'] = $this->currency;
         $postData['tran_id'] = substr(md5($order->id), 0, 10); // tran_id must be unique
 
         $postData['value_a'] = $postData['tran_id'];

@@ -111,7 +111,7 @@
 
                             @foreach($installment->steps as $step)
                                 @php
-                                    $stepPayment = $payments->where('step_id', $step->id)->where('status', 'paid')->first();
+                                    $stepPayment = $payments->where('selected_installment_step_id', $step->id)->where('status', 'paid')->first();
                                     $dueAt = ($step->deadline * 86400) + $order->created_at;
                                     $isOverdue = ($dueAt < time() and empty($stepPayment));
                                 @endphp

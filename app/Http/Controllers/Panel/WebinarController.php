@@ -397,7 +397,7 @@ class WebinarController extends Controller
                 });
 
                 $query->orWhereHas('webinarPartnerTeacher', function ($query) use ($user) {
-                    $query->where('teacher_id', $user->id);
+
                 });
             });
 
@@ -871,6 +871,7 @@ class WebinarController extends Controller
                     $query->orWhereIn('gift_id', $giftsIds);
                 })
                 ->whereNull('refund_at')
+                ->whereHas('buyer')
                 ->with([
                     'buyer' => function ($query) {
                         $query->select('id', 'full_name', 'email', 'mobile');

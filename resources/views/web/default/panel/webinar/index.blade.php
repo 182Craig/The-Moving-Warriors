@@ -80,27 +80,27 @@
 
                                 @switch($webinar->status)
                                     @case(\App\Models\Webinar::$active)
-                                    @if($webinar->isWebinar())
-                                        @if($webinar->start_date > time())
-                                            <span class="badge badge-primary">{{  trans('panel.not_conducted') }}</span>
-                                        @elseif($webinar->isProgressing())
-                                            <span class="badge badge-secondary">{{ trans('webinars.in_progress') }}</span>
+                                        @if($webinar->isWebinar())
+                                            @if($webinar->start_date > time())
+                                                <span class="badge badge-primary">{{  trans('panel.not_conducted') }}</span>
+                                            @elseif($webinar->isProgressing())
+                                                <span class="badge badge-secondary">{{ trans('webinars.in_progress') }}</span>
+                                            @else
+                                                <span class="badge badge-secondary">{{ trans('public.finished') }}</span>
+                                            @endif
                                         @else
-                                            <span class="badge badge-secondary">{{ trans('public.finished') }}</span>
+                                            <span class="badge badge-secondary">{{ trans('webinars.'.$webinar->type) }}</span>
                                         @endif
-                                    @else
-                                        <span class="badge badge-secondary">{{ trans('webinars.'.$webinar->type) }}</span>
-                                    @endif
-                                    @break
+                                        @break
                                     @case(\App\Models\Webinar::$isDraft)
-                                    <span class="badge badge-danger">{{ trans('public.draft') }}</span>
-                                    @break
+                                        <span class="badge badge-danger">{{ trans('public.draft') }}</span>
+                                        @break
                                     @case(\App\Models\Webinar::$pending)
-                                    <span class="badge badge-warning">{{ trans('public.waiting') }}</span>
-                                    @break
+                                        <span class="badge badge-warning">{{ trans('public.waiting') }}</span>
+                                        @break
                                     @case(\App\Models\Webinar::$inactive)
-                                    <span class="badge badge-danger">{{ trans('public.rejected') }}</span>
-                                    @break
+                                        <span class="badge badge-danger">{{ trans('public.rejected') }}</span>
+                                        @break
                                 @endswitch
 
                                 @if($webinar->isWebinar())
@@ -128,7 +128,9 @@
                                                     <button type="button" data-webinar-id="{{ $webinar->id }}" class="js-webinar-next-session webinar-actions btn-transparent d-block">{{ trans('public.create_join_link') }}</button>
                                                 @endif
 
-                                                <a href="{{ $webinar->getLearningPageUrl() }}" target="_blank" class="webinar-actions d-block mt-10">{{ trans('update.learning_page') }}</a>
+                                                @if($webinar->status == \App\Models\Webinar::$active)
+                                                    <a href="{{ $webinar->getLearningPageUrl() }}" target="_blank" class="webinar-actions d-block mt-10">{{ trans('update.learning_page') }}</a>
+                                                @endif
 
                                                 <a href="/panel/webinars/{{ $webinar->id }}/edit" class="webinar-actions d-block mt-10">{{ trans('public.edit') }}</a>
 

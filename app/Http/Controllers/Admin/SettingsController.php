@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\traits\DeviceLimitSettings;
 use App\Http\Controllers\Admin\traits\FinancialCurrencySettings;
 use App\Http\Controllers\Admin\traits\FinancialOfflineBankSettings;
 use App\Http\Controllers\Admin\traits\FinancialUserBankSettings;
@@ -23,6 +24,7 @@ class SettingsController extends Controller
     use FinancialCurrencySettings;
     use FinancialOfflineBankSettings;
     use FinancialUserBankSettings;
+    use DeviceLimitSettings;
 
     public function index()
     {
@@ -144,7 +146,6 @@ class SettingsController extends Controller
                     $values[$key] = $val;
                 }
             }
-
 
             if ($name == 'referral') {
                 $getFinancialCommission = getFinancialSettings('commission') ?? 0;

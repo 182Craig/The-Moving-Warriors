@@ -15,7 +15,7 @@
 
         const contactMap = L.map('contactMap', mapOption).setView([lat, lng], zoom);
 
-        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+        L.tileLayer(leafletApiPath, {
             maxZoom: 18,
             tileSize: 512,
             zoomOffset: -1,

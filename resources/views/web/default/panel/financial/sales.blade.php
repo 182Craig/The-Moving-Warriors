@@ -223,19 +223,19 @@
                                             @if($sale->payment_method == \App\Models\Sale::$subscribe)
                                                 <span class="">{{ trans('financial.subscribe') }}</span>
                                             @else
-                                                <span>{{ handlePrice($sale->amount) }}</span>
+                                                <span>{{ !empty($sale->amount) ? handlePrice($sale->amount) : '-' }}</span>
                                             @endif
                                         </td>
-                                        <td class="align-middle">{{ handlePrice($sale->discount ?? 0) }}</td>
+                                        <td class="align-middle">{{ !empty($sale->discount) ? handlePrice($sale->discount) : '-' }}</td>
                                         <td class="align-middle">
                                             @if($sale->payment_method == \App\Models\Sale::$subscribe)
                                                 <span class="">{{ trans('financial.subscribe') }}</span>
                                             @else
-                                                <span>{{ handlePrice($sale->total_amount) }}</span>
+                                                <span>{{ !empty($sale->total_amount) ? handlePrice($sale->total_amount) : '-' }}</span>
                                             @endif
                                         </td>
                                         <td class="align-middle">
-                                            <span>{{ handlePrice($sale->getIncomeItem()) }}</span>
+                                            <span>{{ !empty($sale->getIncomeItem()) ? handlePrice($sale->getIncomeItem()) : '-' }}</span>
                                         </td>
                                         <td class="align-middle">
                                             @switch($sale->type)

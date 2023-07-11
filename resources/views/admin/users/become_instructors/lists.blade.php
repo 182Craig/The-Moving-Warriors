@@ -29,7 +29,15 @@
 
                                     @foreach($becomeInstructors as $become)
                                         <tr>
-                                            <td>{{ $become->user->full_name }}</td>
+
+                                        @if(!empty($become->user->full_name))
+                                        <td>{{ $become->user->full_name }}</td>
+                                               @else
+                                                <td class="text-danger">User Deleted</td>
+                                                @endif
+
+
+                                           
 
                                             <td>
                                                 @if(!empty($become->registrationPackage))

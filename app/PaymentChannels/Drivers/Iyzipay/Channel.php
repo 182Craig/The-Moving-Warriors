@@ -4,6 +4,7 @@ namespace App\PaymentChannels\Drivers\Iyzipay;
 
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +19,7 @@ use Iyzipay\Model\BasketItem;
 use Iyzipay\Model\BasketItemType;
 use Iyzipay\Options;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
     protected $currency;
     protected $api_key;
@@ -55,8 +56,8 @@ class Channel implements IChannel
         $IForm = new CreatePayWithIyzicoInitializeRequest();
         $IForm->setLocale($this->locale);
         $IForm->setConversationId($order->id);
-        $IForm->setPrice($order->total_amount);
-        $IForm->setPaidPrice($order->total_amount);
+        $IForm->setPrice($this->makeAmountByCurrency($order->total_amount, $this->currency));
+        $IForm->setPaidPrice($this->makeAmountByCurrency($order->total_amount, $this->currency));
         $IForm->setCurrency($this->currency);
         $IForm->setBasketId($user->id);
         $IForm->setPaymentGroup(PaymentGroup::SUBSCRIPTION);
@@ -101,7 +102,7 @@ class Channel implements IChannel
         $FBasketItems->setName($generalSettings['site_name'] . ' payment');
         $FBasketItems->setCategory1($generalSettings['site_name'] . ' payment category');
         $FBasketItems->setItemType(BasketItemType::VIRTUAL);
-        $FBasketItems->setPrice($order->total_amount);
+        $FBasketItems->setPrice($this->makeAmountByCurrency($order->total_amount, $this->currency));
 
         $IForm->setBasketItems([$FBasketItems]);
 

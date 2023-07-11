@@ -222,7 +222,7 @@
 
 
                                         <td class="align-middle text-right">
-                                            @if($ReserveMeeting->status != \App\Models\ReserveMeeting::$finished)
+                                            @if(!in_array($ReserveMeeting->status, [\App\Models\ReserveMeeting::$finished, \App\Models\ReserveMeeting::$canceled]))
 
                                                 <input type="hidden" class="js-meeting-password-{{ $ReserveMeeting->id }}" value="{{ $ReserveMeeting->password }}">
                                                 <input type="hidden" class="js-meeting-link-{{ $ReserveMeeting->id }}" value="{{ $ReserveMeeting->link }}">

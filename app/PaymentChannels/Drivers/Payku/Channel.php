@@ -4,13 +4,14 @@ namespace App\PaymentChannels\Drivers\Payku;
 
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use Illuminate\Http\Request;
 use Instamojo\Instamojo;
 use SebaCarrasco93\LaravelPayku\Facades\LaravelPayku;
 use SebaCarrasco93\LaravelPayku\Models\PaykuTransaction;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
     protected $currency;
     protected $order_session_key;
@@ -30,7 +31,7 @@ class Channel implements IChannel
         $data = [
             'order' => rand(0000000, 11111111) . date('is'),
             'subject' => 'Order Payment',
-            'amount' => $order->total_amount,
+            'amount' => $this->makeAmountByCurrency($order->total_amount, $this->currency),
             'email' => $user->email
         ];
 

@@ -22,6 +22,11 @@ class InstallmentOrder extends Model
         return $this->belongsTo(Installment::class, 'installment_id', 'id');
     }
 
+    public function selectedInstallment()
+    {
+        return $this->hasOne(SelectedInstallment::class, 'installment_order_id', 'id');
+    }
+
     public function webinar()
     {
         return $this->belongsTo(Webinar::class, 'webinar_id', 'id');
@@ -110,7 +115,7 @@ class InstallmentOrder extends Model
         $result = false;
 
         if ($this->status == "open") {
-            $installment = $this->installment;
+            $installment = $this->selectedInstallment;
             $installmentSteps = $installment->steps;
 
             $paid = true;
@@ -118,7 +123,7 @@ class InstallmentOrder extends Model
                 if ($paid) {
                     $payment = InstallmentOrderPayment::query()
                         ->where('installment_order_id', $this->id)
-                        ->where('step_id', $step->id)
+                        ->where('selected_installment_step_id', $step->id)
                         ->where('status', 'paid')
                         ->first();
 
@@ -140,13 +145,13 @@ class InstallmentOrder extends Model
         $time = time();
 
         if ($this->status == 'open') {
-            foreach ($this->installment->steps as $step) {
+            foreach ($this->selectedInstallment->steps as $step) {
                 $dueAt = ($step->deadline * 86400) + $this->created_at;
 
                 if ($time > $dueAt) {
                     $payment = InstallmentOrderPayment::query()
                         ->where('installment_order_id', $this->id)
-                        ->where('step_id', $step->id)
+                        ->where('selected_installment_step_id', $step->id)
                         ->where('status', 'paid')
                         ->first();
 
@@ -169,13 +174,13 @@ class InstallmentOrder extends Model
         $itemPrice = $this->getItemPrice();
 
         if ($this->status == 'open' and !empty($itemPrice)) {
-            foreach ($this->installment->steps as $step) {
+            foreach ($this->selectedInstallment->steps as $step) {
                 $dueAt = ($step->deadline * 86400) + $this->created_at;
 
                 if ($time > $dueAt) {
                     $payment = InstallmentOrderPayment::query()
                         ->where('installment_order_id', $this->id)
-                        ->where('step_id', $step->id)
+                        ->where('selected_installment_step_id', $step->id)
                         ->where('status', 'paid')
                         ->first();
 
@@ -199,13 +204,13 @@ class InstallmentOrder extends Model
         $time = time();
 
         if ($this->status == 'open') {
-            foreach ($this->installment->steps as $step) {
+            foreach ($this->selectedInstallment->steps as $step) {
                 $dueAt = ($step->deadline * 86400) + $this->created_at;
 
                 if ($time > $dueAt) {
                     $payment = InstallmentOrderPayment::query()
                         ->where('installment_order_id', $this->id)
-                        ->where('step_id', $step->id)
+                        ->where('selected_installment_step_id', $step->id)
                         ->where('status', 'paid')
                         ->first();
 
@@ -228,7 +233,7 @@ class InstallmentOrder extends Model
         }
 
         $amount = 0;
-        $installment = $this->installment;
+        $installment = $this->selectedInstallment;
 
         if (!empty($installment)) {
             $amount = $installment->getUpfront($itemPrice);

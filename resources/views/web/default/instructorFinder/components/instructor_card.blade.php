@@ -39,7 +39,7 @@
 
             <div class="d-flex align-items-start">
                 @if(!empty($instructor->meeting) and !empty($instructor->meeting->meetingTimes) and count($instructor->meeting->meetingTimes))
-                    @if(!empty($price))
+                    @if(!empty($price) and $price > 0)
                         <div class="d-flex flex-column">
                             <span class="font-20 font-weight-bold text-primary">{{ handlePrice(!empty($discount) ? ($price - ($price * $discount / 100)) : $price) }}</span>
 

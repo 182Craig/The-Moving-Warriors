@@ -4,11 +4,12 @@ namespace App\PaymentChannels\Drivers\YandexCheckout;
 
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use Illuminate\Http\Request;
 use Omnipay\Omnipay;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
     protected $currency;
     protected $api_key;
@@ -34,7 +35,7 @@ class Channel implements IChannel
 
         $gateway->setReturnUrl($this->makeCallbackUrl($order));
 
-        $gateway->setAmount($order->total_amount); // Amount to charge
+        $gateway->setAmount($this->makeAmountByCurrency($order->total_amount, $this->currency)); // Amount to charge
         $gateway->setCurrency($this->currency); // Currency
         $purchase = $gateway->purchase()->send();
 

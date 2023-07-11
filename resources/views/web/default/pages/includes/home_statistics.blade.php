@@ -23,7 +23,7 @@
                             <div class="stat-icon-box student">
                                 <img src="/assets/default/img/stats/student.svg" alt="" class="img-fluid"/>
                             </div>
-                            <!-- <strong class="stat-number mt-10">{{ $homeDefaultStatistics['studentsCount'] }}</strong> -->
+                            <strong class="stat-number mt-10">{{ $homeDefaultStatistics['studentsCount'] }}</strong>
                             <h4 class="stat-title">{{ trans('home.happy_students') }}</h4>
                             <p class="stat-desc mt-10">{{ trans('home.happy_students_hint') }}</p>
                         </div>
@@ -63,8 +63,8 @@
                                 <div class="stat-icon-box " style="background-color: {{ $homeCustomStatistic->color }}">
                                     <img src="{{ $homeCustomStatistic->icon }}" alt="{{ $homeCustomStatistic->title }}" class="img-fluid"/>
                                 </div>
-                               <!-- <strong class="stat-number mt-10">{{ $homeCustomStatistic->count }}</strong> -->
-                               <h4 class="stat-title" style="padding-top: 10px;">{{ $homeCustomStatistic->title }}</h4>
+                                <strong class="stat-number mt-10">{{ $homeCustomStatistic->count }}</strong>
+                                <h4 class="stat-title">{{ $homeCustomStatistic->title }}</h4>
                                 <p class="stat-desc mt-10">{{ $homeCustomStatistic->description }}</p>
                             </div>
                         </div>

@@ -171,6 +171,8 @@
 
 @push('scripts_bottom')
     <script src="/assets/vendors/leaflet/leaflet.min.js"></script>
-
+    <script>
+        var leafletApiPath = '{{ getLeafletApiPath() }}';
+    </script>
     <script src="/assets/default/js/parts/contact.min.js"></script>
 @endpush

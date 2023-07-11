@@ -49,6 +49,11 @@ class Bundle extends Model implements TranslatableContract
         return getTranslateAttributeValue($this, 'seo_description');
     }
 
+    public function getDurationAttribute()
+    {
+        return $this->getBundleDuration();
+    }
+
     public function creator()
     {
         return $this->belongsTo('App\User', 'creator_id', 'id');
@@ -182,7 +187,12 @@ class Bundle extends Model implements TranslatableContract
         $ticketPercent = 0;
         $bestTicket = $this->price;
 
-        if (count($this->tickets)) {
+        $activeSpecialOffer = $this->activeSpecialOffer();
+
+        if ($activeSpecialOffer) {
+            $bestTicket = $this->price - ($this->price * $activeSpecialOffer->percent / 100);
+            $ticketPercent = $activeSpecialOffer->percent;
+        } else if (count($this->tickets)) {
             foreach ($this->tickets as $ticket) {
                 if ($ticket->isValid()) {
                     $discount = $this->price - ($this->price * $ticket->discount / 100);

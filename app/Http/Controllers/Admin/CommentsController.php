@@ -172,8 +172,16 @@ class CommentsController extends Controller
                 'status' => ($comment->status == 'pending') ? 'active' : 'pending',
             ]);
 
-            $commentReward = RewardAccounting::calculateScore(Reward::COMMENT);
-            RewardAccounting::makeRewardAccounting($comment->user_id, $commentReward, Reward::COMMENT, $comment->id, true);
+            if ($comment->status == 'active') {
+                $commentReward = RewardAccounting::calculateScore(Reward::COMMENT);
+                RewardAccounting::makeRewardAccounting($comment->user_id, $commentReward, Reward::COMMENT, $comment->id, true);
+
+                // Blog Comment Reward
+                if ($this->item == 'blog') {
+                    $blogCommentReward = RewardAccounting::calculateScore(Reward::COMMENT_FOR_INSTRUCTOR_BLOG);
+                    RewardAccounting::makeRewardAccounting($comment->user_id, $blogCommentReward, Reward::COMMENT_FOR_INSTRUCTOR_BLOG, $comment->id, true);
+                }
+            }
 
             if ($comment->status == 'active' and !empty($comment->webinar_id)) {
                 $webinar = Webinar::FindOrFail($comment->webinar_id);

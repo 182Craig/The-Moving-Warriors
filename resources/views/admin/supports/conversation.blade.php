@@ -53,7 +53,7 @@
 
                                         <div class="chat-time">{{ !empty($conversations->sender_id) ? $conversations->sender->full_name : $conversations->supporter->full_name }}</div>
 
-                                        <div class="chat-text">{{ nl2br($conversations->message) }}</div>
+                                        <div class="chat-text white-space-pre-wrap">{{ $conversations->message }}</div>
                                         <div class="chat-time">
                                             <span class="mr-2">{{ dateTimeFormat($conversations->created_at,'Y M j | H:i') }}</span>
 

@@ -266,7 +266,7 @@ trait LearningPageItemInfoTrait
                 'textLesson' => [
                     'id' => $textLesson->id,
                     'title' => $textLesson->title,
-                    'image' => url($textLesson->image),
+                    'image' => !empty($textLesson->image) ? url($textLesson->image) : null,
                     'study_time' => $textLesson->study_time,
                     'summary' => $textLesson->summary,
                     'content' => $textLesson->content,

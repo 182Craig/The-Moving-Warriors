@@ -209,6 +209,7 @@
         var selectProvinceLang = '{{ trans('update.select_province') }}';
         var selectCityLang = '{{ trans('update.select_city') }}';
         var selectDistrictLang = '{{ trans('update.select_district') }}';
+        var leafletApiPath = '{{ getLeafletApiPath() }}';
     </script>
 
     <script src="/assets/default/js/panel/user_settings_tab.min.js"></script>

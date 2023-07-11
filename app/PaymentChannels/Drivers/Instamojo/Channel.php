@@ -4,11 +4,12 @@ namespace App\PaymentChannels\Drivers\Instamojo;
 
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use Illuminate\Http\Request;
 use Instamojo\Instamojo;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
     protected $currency;
     protected $order_session_key;
@@ -41,7 +42,7 @@ class Channel implements IChannel
         try {
             $response = $this->api->createPaymentRequest([
                 "purpose" => 'order payment',
-                "amount" => $order->total_amount,
+                "amount" => $this->makeAmountByCurrency($order->total_amount, $this->currency),
                 "send_email" => false,
                 "email" => $user->email,
                 "phone" => $user->mobile,

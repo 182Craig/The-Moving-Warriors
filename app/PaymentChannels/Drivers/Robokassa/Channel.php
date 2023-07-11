@@ -4,11 +4,12 @@ namespace App\PaymentChannels\Drivers\Robokassa;
 
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use Illuminate\Http\Request;
 use Omnipay\Omnipay;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
     protected $currency;
     protected $test_mode;
@@ -59,7 +60,7 @@ class Channel implements IChannel
                 'language' => 'ENG',
                 'transactionId' => $order->id,
                 'paymentMethod' => 'hanzaee',
-                'amount' => $order->total_amount,
+                'amount' => $this->makeAmountByCurrency($order->total_amount, $this->currency),
                 'currency' => $this->currency,
                 'description' => 'Paying by Robokassa',
                 'testMode' => $this->test_mode,

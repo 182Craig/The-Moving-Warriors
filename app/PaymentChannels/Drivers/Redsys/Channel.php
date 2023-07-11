@@ -4,11 +4,12 @@ namespace App\PaymentChannels\Drivers\Redsys;
 
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use Illuminate\Http\Request;
 use Ssheduardo\Redsys\Facades\Redsys;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
     protected $currency;
     protected $key;
@@ -39,7 +40,7 @@ class Channel implements IChannel
         try {
             //$user = $order->user;
 
-            Redsys::setAmount($order->total_amount);
+            Redsys::setAmount($this->makeAmountByCurrency($order->total_amount, $this->currency));
             Redsys::setOrder(time());
             Redsys::setMerchantcode($this->merchantCode); //Reemplazar por el código que proporciona el banco
             Redsys::setCurrency($this->currency);

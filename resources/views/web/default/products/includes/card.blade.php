@@ -52,10 +52,10 @@
                     <span class="text-warning real font-14">{{ $product->point }} {{ trans('update.points') }}</span>
                 @elseif($product->price > 0)
                     @if($product->getPriceWithActiveDiscountPrice() < $product->price)
-                        <span class="real">{{ handlePrice($product->getPriceWithActiveDiscountPrice(), true, true, false, null, true) }}</span>
-                        <span class="off ml-10">{{ handlePrice($product->price, true, true, false, null, true) }}</span>
+                        <span class="real">{{ handlePrice($product->getPriceWithActiveDiscountPrice(), true, true, false, null, true, 'store') }}</span>
+                        <span class="off ml-10">{{ handlePrice($product->price, true, true, false, null, true, 'store') }}</span>
                     @else
-                        <span class="real">{{ handlePrice($product->price, true, true, false, null, true) }}</span>
+                        <span class="real">{{ handlePrice($product->price, true, true, false, null, true, 'store') }}</span>
                     @endif
                 @else
                     <span class="real">{{ trans('public.free') }}</span>

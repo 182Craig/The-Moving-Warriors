@@ -4,11 +4,13 @@ namespace App\PaymentChannels\Drivers\Payfort;
 
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use Illuminate\Http\Request;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
+    protected $currency;
 
     /**
      * Channel constructor.
@@ -16,13 +18,13 @@ class Channel implements IChannel
      */
     public function __construct(PaymentChannel $paymentChannel)
     {
-
+        $this->currency = currency();
     }
 
     public function paymentRequest(Order $order)
     {
         $user = $order->user;
-        $price = $order->total_amount;
+        $price = $this->makeAmountByCurrency($order->total_amount, $this->currency);
         $generalSettings = getGeneralSettings();
         $currency = currency();
 

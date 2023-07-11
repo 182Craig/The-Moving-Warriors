@@ -65,6 +65,7 @@ class CartItemInfo
     {
         $info = [];
 
+        $info['isProduct'] = true;
         $info['imgPath'] = $product->thumbnail;
         $info['itemUrl'] = $product->getUrl();
         $info['title'] = $product->title;

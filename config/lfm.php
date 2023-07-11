@@ -118,7 +118,7 @@ return [
      */
 
     'paginator' => [
-        'perPage' => 30,
+        'perPage' => 20,
     ],
 
     /*

@@ -32,6 +32,12 @@ class SetCurrencyController extends Controller
             }
         }
 
+        $previousUrl = $request->get('previous_url');
+
+        if (!empty($previousUrl)) {
+            return redirect($previousUrl);
+        }
+
         return redirect()->back();
     }
 }

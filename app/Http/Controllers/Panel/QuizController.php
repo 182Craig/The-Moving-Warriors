@@ -117,7 +117,10 @@ class QuizController extends Controller
         $user = auth()->user();
         $webinars = Webinar::where(function ($query) use ($user) {
             $query->where('teacher_id', $user->id)
-                ->orWhere('creator_id', $user->id);
+                ->orWhere('creator_id', $user->id)
+                ->orWhereHas('webinarPartnerTeacher', function ($query) use ($user) {
+                    $query->where('teacher_id', $user->id);
+                });
         })->get();
 
         $locale = $request->get('locale', app()->getLocale());
@@ -161,7 +164,10 @@ class QuizController extends Controller
             $webinar = Webinar::where('id', $data['webinar_id'])
                 ->where(function ($query) use ($user) {
                     $query->where('teacher_id', $user->id)
-                        ->orWhere('creator_id', $user->id);
+                        ->orWhere('creator_id', $user->id)
+                        ->orWhereHas('webinarPartnerTeacher', function ($query) use ($user) {
+                            $query->where('teacher_id', $user->id);
+                        });
                 })->first();
 
             if (!empty($webinar) and !empty($data['chapter_id'])) {
@@ -194,7 +200,7 @@ class QuizController extends Controller
             ]);
 
             if (!empty($quiz->chapter_id)) {
-                WebinarChapterItem::makeItem($user->id, $quiz->chapter_id, $quiz->id, WebinarChapterItem::$chapterQuiz);
+                WebinarChapterItem::makeItem($quiz->creator_id, $quiz->chapter_id, $quiz->id, WebinarChapterItem::$chapterQuiz);
             }
         }
 
@@ -225,7 +231,10 @@ class QuizController extends Controller
         $user = auth()->user();
         $webinars = Webinar::where(function ($query) use ($user) {
             $query->where('teacher_id', $user->id)
-                ->orWhere('creator_id', $user->id);
+                ->orWhere('creator_id', $user->id)
+                ->orWhereHas('webinarPartnerTeacher', function ($query) use ($user) {
+                    $query->where('teacher_id', $user->id);
+                });
         })->get();
 
         $webinarIds = $webinars->pluck('id')->toArray();
@@ -272,13 +281,17 @@ class QuizController extends Controller
     public function update(Request $request, $id)
     {
         $user = auth()->user();
+        $data = $request->get('ajax')[$id];
 
         $webinar = null;
         if (!empty($data['webinar_id'])) {
             $webinar = Webinar::where('id', $data['webinar_id'])
                 ->where(function ($query) use ($user) {
                     $query->where('teacher_id', $user->id)
-                        ->orWhere('creator_id', $user->id);
+                        ->orWhere('creator_id', $user->id)
+                        ->orWhereHas('webinarPartnerTeacher', function ($query) use ($user) {
+                            $query->where('teacher_id', $user->id);
+                        });
                 })->first();
         }
 
@@ -296,7 +309,6 @@ class QuizController extends Controller
         if (!empty($quiz)) {
             $quizQuestionsCount = $quiz->quizQuestions->count();
 
-            $data = $request->get('ajax')[$id];
             $locale = $data['locale'] ?? getDefaultLocale();
 
             $rules = [
@@ -338,18 +350,18 @@ class QuizController extends Controller
             ]);
 
 
-            $checkChapterItem = WebinarChapterItem::where('user_id', $user->id)
+            $checkChapterItem = WebinarChapterItem::where('user_id', $quiz->creator_id)
                 ->where('item_id', $quiz->id)
                 ->where('type', WebinarChapterItem::$chapterQuiz)
                 ->first();
 
             if (!empty($quiz->chapter_id)) {
                 if (empty($checkChapterItem)) {
-                    WebinarChapterItem::makeItem($user->id, $quiz->chapter_id, $quiz->id, WebinarChapterItem::$chapterQuiz);
+                    WebinarChapterItem::makeItem($quiz->creator_id, $quiz->chapter_id, $quiz->id, WebinarChapterItem::$chapterQuiz);
                 } elseif ($checkChapterItem->chapter_id != $quiz->chapter_id) {
                     $checkChapterItem->delete(); // remove quiz from old chapter and assign it to new chapter
 
-                    WebinarChapterItem::makeItem($user->id, $quiz->chapter_id, $quiz->id, WebinarChapterItem::$chapterQuiz);
+                    WebinarChapterItem::makeItem($quiz->creator_id, $quiz->chapter_id, $quiz->id, WebinarChapterItem::$chapterQuiz);
                 }
             } else if (!empty($checkChapterItem)) {
                 $checkChapterItem->delete();

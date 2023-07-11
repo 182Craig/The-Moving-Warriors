@@ -172,7 +172,7 @@ class UserController extends Controller
                     'email' => $data['email'],
                     'full_name' => $data['full_name'],
                     'mobile' => $data['mobile'],
-                    'language' => $data['language'],
+                    'language' => $data['language'] ?? null,
                     'timezone' => $data['timezone'] ?? null,
                     'currency' => $data['currency'] ?? null,
                     'newsletter' => $joinNewsletter,
@@ -606,8 +606,8 @@ class UserController extends Controller
                 'password' => Hash::make($data['password']),
                 'full_name' => $data['full_name'],
                 'mobile' => $data['mobile'],
-                'language' => $data['language'],
-                'timezone' => $data['timezone'],
+                'language' => $data['language'] ?? null,
+                'timezone' => $data['timezone'] ?? null,
                 'currency' => $data['currency'] ?? null,
                 'affiliate' => $usersAffiliateStatus,
                 'newsletter' => (!empty($data['join_newsletter']) and $data['join_newsletter'] == 'on'),
@@ -621,7 +621,7 @@ class UserController extends Controller
                 '[u.name]' => $user->full_name,
                 '[u.role]' => trans("update.role_{$user->role_name}"),
             ];
-            sendNotification('new_user_item_rating', $notifyOptions, 1);
+            sendNotification('new_organization_user', $notifyOptions, 1);
 
 
             return redirect('/panel/manage/' . $user_type . '/' . $user->id . '/edit');

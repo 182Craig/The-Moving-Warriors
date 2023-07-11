@@ -392,9 +392,14 @@
     function handleTextLessonHtml(textLesson) {
         let html = `<div class="text-lesson-content p-15 p-lg-30">
                     <h4 class="font-16 font-weight-bold text-dark">${textLesson.title}</h4>
-                    <div class="pb-5 mt-15 main-image rounded-lg w-100">
-                        <img src="${textLesson.image}" class="img-cover bg-gray200" alt="${textLesson.title}"/>
-                    </div>
+
+                    ${
+                        (textLesson.image) ?
+                            `<div class="pb-5 mt-15 main-image rounded-lg w-100">
+                                <img src="${textLesson.image}" class="img-cover bg-gray200" alt="${textLesson.title}"/>
+                            </div>`
+                        : ''
+                    }
 
                     ${textLesson.content}
                 </div>`;

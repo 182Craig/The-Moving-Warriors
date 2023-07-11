@@ -215,7 +215,7 @@
                                                     @endif
                                                 </div>
                                             </div>
-                                            <p class="text-gray mt-15 font-weight-500 font-14">{{ nl2br($conversations->message) }}</p>
+                                            <p class="white-space-pre-wrap text-gray mt-15 font-weight-500 font-14">{{ $conversations->message }}</p>
                                         </div>
                                     @endforeach
 

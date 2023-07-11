@@ -128,7 +128,9 @@
                                 @foreach($course->tickets as $ticket)
 
                                     <div class="form-check mt-20">
-                                        <input class="form-check-input" @if(!$ticket->isValid()) disabled @endif type="radio" data-discount="{{ $ticket->discount }}" value="{{ ($ticket->isValid()) ? $ticket->id : '' }}"
+                                        <input class="form-check-input" @if(!$ticket->isValid()) disabled @endif type="radio"
+                                               data-discount-price="{{ handlePrice($ticket->getPriceWithDiscount($course->price, !empty($activeSpecialOffer) ? $activeSpecialOffer : null)) }}"
+                                               value="{{ ($ticket->isValid()) ? $ticket->id : '' }}"
                                                name="ticket_id"
                                                id="courseOff{{ $ticket->id }}">
                                         <label class="form-check-label d-flex flex-column cursor-pointer" for="courseOff{{ $ticket->id }}">
@@ -561,4 +563,15 @@
     <script src="/assets/default/js/parts/comment.min.js"></script>
     <script src="/assets/default/js/parts/video_player_helpers.min.js"></script>
     <script src="/assets/default/js/parts/webinar_show.min.js"></script>
+
+
+    @if(!empty($course->creator) and !empty($course->creator->live_chat_js_code) and !empty(getFeaturesSettings('show_live_chat_widget')))
+        <script>
+            (function () {
+                "use strict"
+
+                {!! $course->creator->live_chat_js_code !!}
+            })(jQuery)
+        </script>
+    @endif
 @endpush

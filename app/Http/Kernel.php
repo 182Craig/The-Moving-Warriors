@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\AdminAuthenticate;
+use App\Http\Middleware\AdminLocale;
 use App\Http\Middleware\CheckMaintenance;
 use App\Http\Middleware\CheckMobileApp;
 use App\Http\Middleware\Impersonate;
@@ -81,6 +82,7 @@ class Kernel extends HttpKernel
         'web.auth' => WebAuthenticate::class,
         'impersonate' => Impersonate::class,
         'share' => Share::class,
+        'admin_locale' => AdminLocale::class,
         'check_mobile_app' => CheckMobileApp::class,
         'check_maintenance' => CheckMaintenance::class,
         // api

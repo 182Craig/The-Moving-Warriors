@@ -112,7 +112,7 @@
                                                 </div>
                                                 <a href="{{ $post->topic->getPostsUrl() }}" target="_blank" class="">
                                                     <div class=" ml-5">
-                                                        <span class="d-block font-16 font-weight-500 text-dark-blue">{{ $post->topic->title }}</span>
+                                                        <span class="d-block font-14 font-weight-500 text-dark-blue">{{ $post->topic->title }}</span>
                                                         <span class="font-12 text-gray mt-5">{{ trans('public.by') }} {{ $post->topic->creator->full_name }}</span>
                                                     </div>
                                                 </a>

@@ -24,6 +24,6 @@ class InstallmentOrderPayment extends Model
 
     public function step()
     {
-        return $this->belongsTo(InstallmentStep::class, 'step_id', 'id');
+        return $this->belongsTo(SelectedInstallmentStep::class, 'selected_installment_step_id', 'id');
     }
 }

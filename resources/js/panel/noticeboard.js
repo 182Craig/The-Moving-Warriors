@@ -2,12 +2,8 @@
     "use strict";
 
 
-    if ($('.summernote').length) {
-        $('.summernote').summernote({
-            tabsize: 2,
-            height: 400,
-            placeholder: $('.summernote').attr('placeholder'),
-        });
+    if (jQuery().summernote) {
+        makeSummernote($('.summernote'), 400)
     }
 
     $('body').on('click', '#submitForm', function (e) {

@@ -286,7 +286,9 @@ class CertificateController extends Controller
 
         $query = $this->filters($query, $request);
 
-        $certificates = $query->with(
+        $certificates = $query
+            ->whereHas('quiz')
+            ->with(
             [
                 'quiz' => function ($query) {
                     $query->with('webinar');

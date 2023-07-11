@@ -4,12 +4,13 @@ namespace App\PaymentChannels\Drivers\Toyyibpay;
 
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Instamojo\Instamojo;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
     protected $currency;
     protected $order_session_key;
@@ -38,7 +39,7 @@ class Channel implements IChannel
             'billDescription' => 'Payment Using ToyyibPay',
             'billPriceSetting' => 1,
             'billPayorInfo' => 1,
-            'billAmount' => $order->total_amount,
+            'billAmount' => $this->makeAmountByCurrency($order->total_amount, $this->currency),
             'billReturnUrl' => $this->makeCallbackUrl('return'),
             'billCallbackUrl' => $this->makeCallbackUrl('return'),
             'billExternalReferenceNo' => $order->id,

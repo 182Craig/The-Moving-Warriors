@@ -583,7 +583,7 @@ class WebinarController extends Controller
 
         if (!empty($data['teacher_id'])) {
             $teacher = User::find($data['teacher_id']);
-            $creator = $webinar->creator;
+            $creator = !empty($data['organ_id']) ? User::find($data['organ_id']) : $webinar->creator;
 
             if (empty($teacher) or ($creator->isOrganization() and ($teacher->organ_id != $creator->id and $teacher->id != $creator->id))) {
                 $toastData = [

@@ -4,11 +4,12 @@ namespace App\PaymentChannels\Drivers\Voguepay;
 
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
     protected $currency;
     protected $test_mode;
@@ -39,7 +40,7 @@ class Channel implements IChannel
             'failedUrl' => $this->makeCallbackUrl('failed'),
             'test_mode' => $this->test_mode,
             'voguepay_merchant_id' => $this->voguepay_merchant_id,
-            'total_amount' => $order->total_amount,
+            'total_amount' => $this->makeAmountByCurrency($order->total_amount, $this->currency),
             'currency' => $this->currency,
             'userData' => [
                 'name' => $user->full_name,

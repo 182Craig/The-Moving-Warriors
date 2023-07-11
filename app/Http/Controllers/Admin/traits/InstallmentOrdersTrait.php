@@ -21,7 +21,7 @@ trait InstallmentOrdersTrait
             'pageTitle' => trans('update.installment_verification') . ' - '.$order->user->full_name,
             'order' => $order,
             'payments' => $order->payments,
-            'installment' => $order->installment,
+            'installment' => $order->selectedInstallment,
             'attachments' => $order->attachments,
             'itemPrice' => $order->getItemPrice(),
         ];

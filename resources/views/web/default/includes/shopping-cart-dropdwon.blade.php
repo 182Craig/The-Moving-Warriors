@@ -19,6 +19,7 @@
                         @foreach($userCarts as $cart)
                             @php
                                 $cartItemInfo = $cart->getItemInfo();
+                                $cartTaxType = !empty($cartItemInfo['isProduct']) ? 'store' : 'general';
                             @endphp
 
                             @if(!empty($cartItemInfo))
@@ -34,10 +35,10 @@
                                         </a>
                                         <div class="price mt-10">
                                             @if(!empty($cartItemInfo['discountPrice']))
-                                                <span class="text-primary font-weight-bold">{{ handlePrice($cartItemInfo['discountPrice'], true, true, false, null, true) }}</span>
-                                                <span class="off ml-15">{{ handlePrice($cartItemInfo['price'], true, true, false, null, true) }}</span>
+                                                <span class="text-primary font-weight-bold">{{ handlePrice($cartItemInfo['discountPrice'], true, true, false, null, true, $cartTaxType) }}</span>
+                                                <span class="off ml-15">{{ handlePrice($cartItemInfo['price'], true, true, false, null, true, $cartTaxType) }}</span>
                                             @else
-                                                <span class="text-primary font-weight-bold">{{ handlePrice($cartItemInfo['price'], true, true, false, null, true) }}</span>
+                                                <span class="text-primary font-weight-bold">{{ handlePrice($cartItemInfo['price'], true, true, false, null, true, $cartTaxType) }}</span>
                                             @endif
 
                                             @if(!empty($cartItemInfo['quantity']))
@@ -52,7 +53,7 @@
                     <div class="navbar-cart-actions">
                         <div class="navbar-cart-total mt-15 border-top d-flex align-items-center justify-content-between">
                             <strong class="total-text">{{ trans('cart.total') }}</strong>
-                            <strong class="text-primary font-weight-bold">{{ !empty($totalCartsPrice) ? handlePrice($totalCartsPrice, true, true, false, null, true) : 0 }}</strong>
+                            <strong class="text-primary font-weight-bold">{{ !empty($totalCartsPrice) ? handlePrice($totalCartsPrice, true, true, false, null, true, $cartTaxType) : 0 }}</strong>
                         </div>
 
                         <a href="/cart/" class="btn btn-sm btn-primary btn-block mt-50 mt-md-15">{{ trans('cart.go_to_cart') }}</a>

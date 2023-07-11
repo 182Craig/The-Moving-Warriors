@@ -90,7 +90,7 @@ class Accounting extends Model
     {
         self::createAccountingBuyer($orderItem, $type);
 
-        if ($orderItem->tax_price) {
+        if ($orderItem->tax_price and $orderItem->tax_price > 0) {
             self::createAccountingTax($orderItem);
         }
 
@@ -519,7 +519,7 @@ class Accounting extends Model
     public static function createAccountingForSubscribe($orderItem, $type = null)
     {
         self::createAccountingBuyer($orderItem, $type);
-        if ($orderItem->tax_price) {
+        if ($orderItem->tax_price and $orderItem->tax_price > 0) {
             self::createAccountingTax($orderItem);
         }
 
@@ -537,7 +537,7 @@ class Accounting extends Model
     {
         self::createAccountingBuyer($orderItem, $type);
 
-        if ($orderItem->tax_price) {
+        if ($orderItem->tax_price and $orderItem->tax_price > 0) {
             self::createAccountingTax($orderItem);
         }
 
@@ -571,7 +571,7 @@ class Accounting extends Model
     {
         self::createAccountingBuyer($orderItem, $type);
 
-        if ($orderItem->tax_price) {
+        if ($orderItem->tax_price and $orderItem->tax_price > 0) {
             self::createAccountingTax($orderItem);
         }
 
@@ -677,7 +677,7 @@ class Accounting extends Model
     {
         self::createAccountingBuyer($orderItem, $type);
 
-        if ($orderItem->tax_price) {
+        if ($orderItem->tax_price and $orderItem->tax_price > 0) {
             self::createAccountingTax($orderItem);
         }
 

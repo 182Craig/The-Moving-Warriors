@@ -280,6 +280,11 @@ class WebinarController extends Controller
             'cashbackRules' => $cashbackRules ?? null,
         ];
 
+        // check for certificate
+        if (!empty($user)) {
+            $course->makeCourseCertificateForUser($user);
+        }
+
         if ($justReturnData) {
             return $data;
         }
@@ -756,6 +761,9 @@ class WebinarController extends Controller
                         'created_at' => time()
                     ]);
                 }
+
+                // check for certificate
+                $course->makeCourseCertificateForUser($user);
 
                 return response()->json([], 200);
             }

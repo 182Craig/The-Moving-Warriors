@@ -208,48 +208,7 @@
 
 
     if (jQuery().summernote) {
-        var lfm = function (options, cb) {
-            var route_prefix = (options && options.prefix) ? options.prefix : '/laravel-filemanager';
-            window.open(route_prefix + '?type=' + options.type || 'file', 'FileManager', 'width=900,height=600');
-            window.SetUrl = cb;
-        };
-
-        var LFMButton = function (context) {
-            var ui = $.summernote.ui;
-            var button = ui.button({
-                contents: '<i class="note-icon-picture"></i> ',
-                tooltip: 'Insert image with filemanager',
-                click: function () {
-
-                    lfm({type: 'file', prefix: '/laravel-filemanager'}, function (lfmItems, path) {
-                        lfmItems.forEach(function (lfmItem) {
-                            context.invoke('insertImage', lfmItem.url);
-                        });
-                    });
-
-                }
-            });
-            return button.render();
-        };
-
-        $(".main-summernote").summernote({
-            dialogsInBody: true,
-            tabsize: 2,
-            height: 300,
-            toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'underline', 'clear']],
-                ['color', ['color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['table', ['table']],
-                ['insert', ['link', 'video']],
-                ['view', ['fullscreen', 'codeview', 'help']],
-                ['popovers', ['lfm']],
-            ],
-            buttons: {
-                lfm: LFMButton
-            }
-        });
+        makeSummernote($(".main-summernote"))
     }
 
     var $advertisingModalSettings = $('#advertisingModalSettings');

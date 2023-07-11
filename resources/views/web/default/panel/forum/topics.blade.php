@@ -146,7 +146,7 @@
                                                 </div>
                                                 <a href="{{ $topic->getPostsUrl() }}" target="_blank" class="">
                                                     <div class=" ml-5">
-                                                        <span class="d-block font-16 font-weight-500 text-dark-blue">{{ $topic->title }}</span>
+                                                        <span class="d-block font-14 font-weight-500 text-dark-blue">{{ $topic->title }}</span>
                                                     </div>
                                                 </a>
                                             </div>

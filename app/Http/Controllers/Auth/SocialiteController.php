@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Role;
+use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 use Exception;
@@ -26,7 +27,7 @@ class SocialiteController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function handleGoogleCallback()
+    public function handleGoogleCallback(Request $request)
     {
         try {
             $account = Socialite::driver('google')->user();
@@ -47,6 +48,17 @@ class SocialiteController extends Controller
                     'created_at' => time(),
                     'password' => null
                 ]);
+            } else {
+                $checkLoginDeviceLimit = $this->checkLoginDeviceLimit($user);
+
+                if ($checkLoginDeviceLimit != "ok") {
+                    Auth::logout();
+
+                    $request->session()->flush();
+                    $request->session()->regenerate();
+
+                    return $this->sendMaximumActiveSessionResponse();
+                }
             }
 
             $user->update([
@@ -81,7 +93,7 @@ class SocialiteController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function handleFacebookCallback()
+    public function handleFacebookCallback(Request $request)
     {
         try {
             $account = Socialite::driver('facebook')->user();
@@ -100,6 +112,17 @@ class SocialiteController extends Controller
                     'created_at' => time(),
                     'password' => null
                 ]);
+            } else {
+                $checkLoginDeviceLimit = $this->checkLoginDeviceLimit($user);
+
+                if ($checkLoginDeviceLimit != "ok") {
+                    Auth::logout();
+
+                    $request->session()->flush();
+                    $request->session()->regenerate();
+
+                    return $this->sendMaximumActiveSessionResponse();
+                }
             }
 
             Auth::login($user);
@@ -113,4 +136,34 @@ class SocialiteController extends Controller
             return back()->with(['toast' => $toastData]);
         }
     }
+
+
+    private function checkLoginDeviceLimit($user)
+    {
+        $securitySettings = getGeneralSecuritySettings();
+
+        if (!empty($securitySettings) and !empty($securitySettings['login_device_limit'])) {
+            $limitCount = !empty($securitySettings['number_of_allowed_devices']) ? $securitySettings['number_of_allowed_devices'] : 1;
+
+            $count = $user->logged_count;
+
+            if ($count >= $limitCount) {
+                return "no";
+            }
+        }
+
+        return 'ok';
+    }
+
+    protected function sendMaximumActiveSessionResponse()
+    {
+        $toastData = [
+            'title' => trans('update.login_failed'),
+            'msg' => trans('update.device_limit_reached_please_try_again'),
+            'status' => 'error'
+        ];
+
+        return redirect('/login')->with(['login_failed_active_session' => $toastData]);
+    }
+
 }

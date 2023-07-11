@@ -25,7 +25,7 @@
                                     <i class="fa fa-info"></i>
                                 </div>
                                 <div class="dropdown-item-desc">
-                                   Rocket LMS Version 1.7
+                                   Rocket LMS Version 1.7.2
                                    <div class="time text-primary">All rights reserved for Rocket Soft</div>
                                 </div>
                             </a>

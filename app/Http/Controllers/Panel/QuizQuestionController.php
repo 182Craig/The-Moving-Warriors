@@ -7,6 +7,7 @@ use App\Models\QuizzesQuestion;
 use App\Models\QuizzesQuestionsAnswer;
 use App\Models\Translation\QuizzesQuestionsAnswerTranslation;
 use App\Models\Translation\QuizzesQuestionTranslation;
+use App\Models\Webinar;
 use Illuminate\Http\Request;
 use App\Models\Quiz;
 use Illuminate\Support\Facades\Validator;
@@ -69,11 +70,9 @@ class QuizQuestionController extends Controller
             }
         }
 
-        $quiz = Quiz::where('id', $data['quiz_id'])
-            ->where('creator_id', $user->id)
-            ->first();
+        $quiz = Quiz::where('id', $data['quiz_id'])->first();
 
-        if (!empty($quiz)) {
+        if (!empty($quiz) and $quiz->canAccessToEdit($user)) {
             $order = QuizzesQuestion::query()->where('quiz_id', $quiz->id)->count() + 1;
 
             $quizQuestion = QuizzesQuestion::create([
@@ -137,13 +136,12 @@ class QuizQuestionController extends Controller
     {
         $user = auth()->user();
 
-        $question = QuizzesQuestion::where('id', $question_id)
-            ->where('creator_id', $user->id)
-            ->first();
+        $question = QuizzesQuestion::where('id', $question_id)->first();
 
         if (!empty($question)) {
             $quiz = Quiz::find($question->quiz_id);
-            if (!empty($quiz)) {
+
+            if (!empty($quiz) and $quiz->canAccessToEdit($user)) {
 
                 $locale = $request->get('locale', app()->getLocale());
 
@@ -176,36 +174,41 @@ class QuizQuestionController extends Controller
         $user = auth()->user();
 
         $question = QuizzesQuestion::where('id', $id)
-            ->where('creator_id', $user->id)
             ->with('quizzesQuestionsAnswers')
             ->first();
 
         if (!empty($question)) {
-            $locale = $request->get('locale', app()->getLocale());
 
-            foreach ($question->translatedAttributes as $attribute) {
-                try {
-                    $question->$attribute = $question->translate(mb_strtolower($locale))->$attribute;
-                } catch (\Exception $e) {
-                    $question->$attribute = null;
+            $quiz = Quiz::find($question->quiz_id);
+
+            if (!empty($quiz) and $quiz->canAccessToEdit($user)) {
+
+                $locale = $request->get('locale', app()->getLocale());
+
+                foreach ($question->translatedAttributes as $attribute) {
+                    try {
+                        $question->$attribute = $question->translate(mb_strtolower($locale))->$attribute;
+                    } catch (\Exception $e) {
+                        $question->$attribute = null;
+                    }
                 }
-            }
 
-            if (!empty($question->quizzesQuestionsAnswers) and count($question->quizzesQuestionsAnswers)) {
-                foreach ($question->quizzesQuestionsAnswers as $answer) {
-                    foreach ($answer->translatedAttributes as $att) {
-                        try {
-                            $answer->$att = $answer->translate(mb_strtolower($locale))->$att;
-                        } catch (\Exception $e) {
-                            $answer->$att = null;
+                if (!empty($question->quizzesQuestionsAnswers) and count($question->quizzesQuestionsAnswers)) {
+                    foreach ($question->quizzesQuestionsAnswers as $answer) {
+                        foreach ($answer->translatedAttributes as $att) {
+                            try {
+                                $answer->$att = $answer->translate(mb_strtolower($locale))->$att;
+                            } catch (\Exception $e) {
+                                $answer->$att = null;
+                            }
                         }
                     }
                 }
-            }
 
-            return response()->json([
-                'question' => $question
-            ], 200);
+                return response()->json([
+                    'question' => $question
+                ], 200);
+            }
         }
 
         return response()->json([], 422);
@@ -266,13 +269,10 @@ class QuizQuestionController extends Controller
 
         $user = auth()->user();
 
-        $quiz = Quiz::where('id', $data['quiz_id'])
-            ->where('creator_id', $user->id)
-            ->first();
+        $quiz = Quiz::where('id', $data['quiz_id'])->first();
 
-        if (!empty($quiz)) {
+        if (!empty($quiz) and $quiz->canAccessToEdit($user)) {
             $quizQuestion = QuizzesQuestion::where('id', $id)
-                ->where('creator_id', $user->id)
                 ->where('quiz_id', $quiz->id)
                 ->first();
 
@@ -281,7 +281,6 @@ class QuizQuestionController extends Controller
 
                 $quizQuestion->update([
                     'quiz_id' => $data['quiz_id'],
-                    'creator_id' => $user->id,
                     'grade' => $data['grade'],
                     'type' => $data['type'],
                     'image' => $data['image'] ?? null,
@@ -346,7 +345,7 @@ class QuizQuestionController extends Controller
                             }
                         }
 
-                        if(count($oldAnswerIds)) {
+                        if (count($oldAnswerIds)) {
                             QuizzesQuestionsAnswer::whereIn('id', $oldAnswerIds)->delete();
                         }
                     }
@@ -365,13 +364,20 @@ class QuizQuestionController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        QuizzesQuestion::where('id', $id)
-            ->where('creator_id', auth()->user()->id)
-            ->delete();
+        $user = auth()->user();
 
-        return response()->json([
-            'code' => 200
-        ], 200);
+        $question = QuizzesQuestion::where('id', $id)
+            ->first();
+
+        if (!empty($question) and $question->canAccessToEdit($user)) {
+            $question->delete();
+
+            return response()->json([
+                'code' => 200
+            ], 200);
+        }
+
+        return response()->json([], 422);
     }
 
 }

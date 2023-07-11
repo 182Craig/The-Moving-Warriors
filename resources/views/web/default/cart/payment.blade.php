@@ -26,6 +26,7 @@
         @endif
 
         @php
+            $isMultiCurrency = !empty(getFinancialCurrencySettings('multi_currency'));
             $userCurrency = currency();
             $invalidChannels = [];
         @endphp
@@ -39,7 +40,7 @@
             <div class="row">
                 @if(!empty($paymentChannels))
                     @foreach($paymentChannels as $paymentChannel)
-                        @if(!empty($paymentChannel->currencies) and in_array($userCurrency, $paymentChannel->currencies))
+                        @if(!$isMultiCurrency or (!empty($paymentChannel->currencies) and in_array($userCurrency, $paymentChannel->currencies)))
                             <div class="col-6 col-lg-4 mb-40 charge-account-radio">
                                 <input type="radio" name="gateway" id="{{ $paymentChannel->title }}" data-class="{{ $paymentChannel->class_name }}" value="{{ $paymentChannel->id }}">
                                 <label for="{{ $paymentChannel->title }}" class="rounded-sm p-20 p-lg-45 d-flex flex-column align-items-center justify-content-center">

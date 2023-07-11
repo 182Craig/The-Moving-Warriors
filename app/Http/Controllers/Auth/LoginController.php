@@ -96,6 +96,7 @@ class LoginController extends Controller
         $request->session()->regenerateToken();
 
         if (!empty($user) and $user->logged_count > 0) {
+
             $user->update([
                 'logged_count' => $user->logged_count - 1
             ]);

@@ -56,7 +56,7 @@ class InstructorFinderController extends Controller
         $mapUsers = $query->whereNotNull('location')->get();
 
         foreach ($mapUsers as $mapUser) {
-            $mapUser->price = $mapUser->meeting ? $mapUser->meeting->amount : 0;
+            $mapUser->price = $mapUser->meeting ? convertPriceToUserCurrency($mapUser->meeting->amount) : 0;
             $mapUser->avatar = $mapUser->getAvatar();
             $mapUser->rate = $mapUser->rates();
             $mapUser->profileUrl = url($mapUser->getProfileUrl());

@@ -49,6 +49,10 @@
 
                         <input type="hidden" name="locale">
 
+                        @if(!empty($previousUrl))
+                            <input type="hidden" name="previous_url" value="{{ $previousUrl }}">
+                        @endif
+
                         <div class="language-select">
                             <div id="localItems"
                                  data-selected-country="{{ localeToCountryCode(mb_strtoupper(app()->getLocale())) }}"

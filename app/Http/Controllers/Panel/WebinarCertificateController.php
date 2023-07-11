@@ -64,22 +64,8 @@ class WebinarCertificateController extends Controller
 
     private function calculateCertificates($user, $webinars)
     {
-        $makeCertificate = new MakeCertificate();
-
         foreach ($webinars as $webinar) {
-            if ($webinar->certificate and $webinar->getProgress() >= 100) {
-                $check = Certificate::where('type', 'course')
-                    ->where('student_id', $user->id)
-                    ->where('webinar_id', $webinar->id)
-                    ->first();
-
-                if (empty($check)) {
-                    $userCertificate = $makeCertificate->saveCourseCertificate($user, $webinar);
-
-                    $certificateReward = RewardAccounting::calculateScore(Reward::CERTIFICATE);
-                    RewardAccounting::makeRewardAccounting($userCertificate->student_id, $certificateReward, Reward::CERTIFICATE, $userCertificate->id, true);
-                }
-            }
+            $webinar->makeCourseCertificateForUser($user);
         }
     }
 

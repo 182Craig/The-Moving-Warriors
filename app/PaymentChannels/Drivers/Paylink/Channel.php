@@ -4,11 +4,12 @@ namespace App\PaymentChannels\Drivers\Paylink;
 
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use Illuminate\Http\Request;
 use Paylink\Client as PaylinkClient;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
     protected $currency;
     protected $client;
@@ -49,14 +50,14 @@ class Channel implements IChannel
                 $products[] = [
                     'description' => 'Cart Item ' . $orderItem->id,
                     'imageSrc' => '',
-                    'price' => $orderItem->amount,
+                    'price' => $this->makeAmountByCurrency($orderItem->amount, $this->currency),
                     'qty' => 1,
                     'title' => 'Order ' . $orderItem->id,
                 ];
             }
 
             $data = [
-                'amount' => $order->total_amount,
+                'amount' => $this->makeAmountByCurrency($order->total_amount, $this->currency),
                 'callBackUrl' => $this->makeCallbackUrl($order, 'back'),
                 'clientEmail' => $user->email,
                 'clientMobile' => $user->mobile,

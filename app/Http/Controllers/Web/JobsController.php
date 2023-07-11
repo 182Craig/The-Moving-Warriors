@@ -11,6 +11,7 @@ use App\Models\InstallmentReminder;
 use App\Models\InstallmentStep;
 use App\Models\ReserveMeeting;
 use App\Models\Sale;
+use App\Models\SelectedInstallmentStep;
 use App\Models\Session;
 use App\Models\SessionRemind;
 use App\Models\Subscribe;
@@ -223,69 +224,67 @@ class JobsController extends Controller
         $reminderBeforeOverdueDays = $settings['reminder_before_overdue_days'];
         $reminderAfterOverdueDays = $settings['reminder_after_overdue_days'];
 
-        $steps = InstallmentStep::query()
-            ->whereHas('installment', function ($query) {
-                $query->whereHas('orders');
+        $steps = SelectedInstallmentStep::query()
+            ->whereHas('selectedInstallment', function ($query) {
+                $query->whereHas('order');
             })
             ->get();
 
         foreach ($steps as $step) {
-            $installment = $step->installment;
-            $orders = $installment->orders;
+            $installment = $step->selectedInstallment;
+            $order = $installment->order;
 
-            foreach ($orders as $order) {
-                $checkPayment = InstallmentOrderPayment::query()->where('installment_order_id', $order->id)
-                    ->where('step_id', $step->id)
-                    ->where('status', 'paid')
-                    ->first();
+            $checkPayment = InstallmentOrderPayment::query()->where('installment_order_id', $order->id)
+                ->where('selected_installment_step_id', $step->id)
+                ->where('status', 'paid')
+                ->first();
 
-                if (empty($checkPayment)) {
-                    $itemPrice = $order->getItemPrice();
+            if (empty($checkPayment)) {
+                $itemPrice = $order->getItemPrice();
 
-                    $dueAt = ($step->deadline * 86400) + $order->created_at;
-                    $daysLeft = ($dueAt - $timestamp) / (86400);
+                $dueAt = ($step->deadline * 86400) + $order->created_at;
+                $daysLeft = ($dueAt - $timestamp) / (86400);
 
-                    $reminderType = null;
-                    $template = null;
-                    $notifyOptions = [
-                        '[installment_title]' => $installment->main_title,
-                        '[time.date]' => dateTimeFormat($dueAt, 'j M Y - H:i'),
-                        '[amount]' => handlePrice($step->getPrice($itemPrice)),
-                    ];
+                $reminderType = null;
+                $template = null;
+                $notifyOptions = [
+                    '[installment_title]' => $installment->installment->title,
+                    '[time.date]' => dateTimeFormat($dueAt, 'j M Y - H:i'),
+                    '[amount]' => handlePrice($step->getPrice($itemPrice)),
+                ];
 
-                    if (!empty($reminderBeforeOverdueDays) and $daysLeft > 0 and $daysLeft < $reminderBeforeOverdueDays) {
-                        $template = "reminder_installments_before_overdue";
-                        $reminderType = "before_due";
-                    } else if ($daysLeft < 0) {
-                        $template = "installment_due_reminder";
-                        $reminderType = "due";
+                if (!empty($reminderBeforeOverdueDays) and $daysLeft > 0 and $daysLeft < $reminderBeforeOverdueDays) {
+                    $template = "reminder_installments_before_overdue";
+                    $reminderType = "before_due";
+                } else if ($daysLeft < 0) {
+                    $template = "installment_due_reminder";
+                    $reminderType = "due";
 
-                        if (!empty($reminderAfterOverdueDays) and $daysLeft < (-1 * $reminderAfterOverdueDays)) {
-                            $template = "reminder_installments_after_overdue";
-                            $reminderType = "after_due";
-                        }
+                    if (!empty($reminderAfterOverdueDays) and $daysLeft < (-1 * $reminderAfterOverdueDays)) {
+                        $template = "reminder_installments_after_overdue";
+                        $reminderType = "after_due";
                     }
+                }
 
-                    if (!empty($notifyOptions) and !empty($template) and !empty($reminderType)) {
-                        $checkReminder = InstallmentReminder::query()->where('installment_order_id', $order->id)
-                            ->where('installment_step_id', $step->id)
-                            ->where('user_id', $order->user_id)
-                            ->where('type', $reminderType)
-                            ->first();
+                if (!empty($notifyOptions) and !empty($template) and !empty($reminderType)) {
+                    $checkReminder = InstallmentReminder::query()->where('installment_order_id', $order->id)
+                        ->where('installment_step_id', $step->id)
+                        ->where('user_id', $order->user_id)
+                        ->where('type', $reminderType)
+                        ->first();
 
-                        if (empty($checkReminder)) {
-                            InstallmentReminder::query()->create([
-                                'installment_order_id' => $order->id,
-                                'installment_step_id' => $step->id,
-                                'user_id' => $order->user_id,
-                                'type' => $reminderType,
-                                'created_at' => time()
-                            ]);
+                    if (empty($checkReminder)) {
+                        InstallmentReminder::query()->create([
+                            'installment_order_id' => $order->id,
+                            'installment_step_id' => $step->id,
+                            'user_id' => $order->user_id,
+                            'type' => $reminderType,
+                            'created_at' => time()
+                        ]);
 
-                            $sendCount += 1;
+                        $sendCount += 1;
 
-                            sendNotification($template, $notifyOptions, $order->user_id);
-                        }
+                        sendNotification($template, $notifyOptions, $order->user_id);
                     }
                 }
             }

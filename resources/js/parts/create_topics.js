@@ -1,24 +1,10 @@
 (function () {
     "use strict";
 
-    if ($('#summernote').length) {
-        $('#summernote').summernote({
-            tabsize: 2,
-            height: 400,
-            placeholder: $('#summernote').attr('placeholder'),
-            dialogsInBody: true,
-            toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'underline', 'clear']],
-                ['fontname', ['fontname']],
-                ['color', ['color']],
-                ['para', ['paragraph']],
-                ['table', ['table']],
-                ['insert', ['link', 'picture', 'video']],
-                ['view', ['fullscreen', 'codeview', 'help']],
-            ],
-        });
+    if (jQuery().summernote) {
+        makeSummernote($('#summernote'), 400)
     }
+
 
     $('body').on('click', '.panel-file-manager', function (e) {
         e.preventDefault();

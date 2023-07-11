@@ -4,11 +4,12 @@ namespace App\PaymentChannels\Drivers\Bitpay;
 
 use App\Models\Order;
 use App\Models\PaymentChannel;
+use App\PaymentChannels\BasePaymentChannel;
 use App\PaymentChannels\IChannel;
 use Illuminate\Http\Request;
 use Vrajroham\LaravelBitpay\LaravelBitpay;
 
-class Channel implements IChannel
+class Channel extends BasePaymentChannel implements IChannel
 {
     protected $api_key;
     protected $api_secret;
@@ -24,10 +25,11 @@ class Channel implements IChannel
 
     public function paymentRequest(Order $order)
     {
-        $user = $order->user;
-        $price = $order->total_amount;
         $generalSettings = getGeneralSettings();
         $currency = currency();
+        $user = $order->user;
+        $price = $this->makeAmountByCurrency($order->total_amount, $currency);
+
 
 
         $invoice = LaravelBitpay::Invoice();

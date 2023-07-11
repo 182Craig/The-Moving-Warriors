@@ -55,7 +55,9 @@
 
 body, html {
   direction: rtl;
-  font-family: Vazir, Tahoma, Arial; }
+  font-family: Vazir, Tahoma, Arial;
+    text-align: right;
+}
 
 .ltr {
   direction: ltr; }

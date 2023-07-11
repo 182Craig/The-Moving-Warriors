@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Group;
 use App\Models\Installment;
+use App\Models\InstallmentOrder;
 use App\Models\InstallmentSpecificationItem;
 use App\Models\InstallmentStep;
 use App\Models\InstallmentUserGroup;
@@ -39,6 +40,12 @@ class InstallmentsController extends Controller
             ])
             ->paginate(10);
 
+        foreach ($installments as $installment) {
+            $installment->sales_count = InstallmentOrder::query()
+                ->where('installment_id', $installment->id)
+                ->whereIn('status', ['open', 'pending_verification'])
+                ->count();
+        }
 
         $data = [
             'pageTitle' => trans('update.installment_plans'),

@@ -314,6 +314,11 @@
         box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
         background-color: #fff;
         z-index: 9;
+
+        .rtl & {
+            right: auto;
+            left: 20px;
+        }
     }
 
     &.webinar-list {

@@ -6,11 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Web\traits\InstallmentsTrait;
 use App\Mixins\Installment\InstallmentPlans;
 use App\Mixins\RegistrationPackage\UserPackage;
+use App\Models\Accounting;
+use App\Models\BecomeInstructor;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\PaymentChannel;
 use App\Models\Product;
 use App\Models\RegistrationPackage;
+use App\Models\Sale;
 use App\Models\Webinar;
 use Illuminate\Http\Request;
 
@@ -124,7 +127,7 @@ class RegistrationPackagesController extends Controller
             "created_at" => time(),
         ]);
 
-        OrderItem::updateOrCreate([
+        $orderItem = OrderItem::updateOrCreate([
             'user_id' => $user->id,
             'order_id' => $order->id,
             'registration_package_id' => $package->id,
@@ -138,6 +141,10 @@ class RegistrationPackagesController extends Controller
             'commission_price' => 0,
             'created_at' => time(),
         ]);
+
+        if (empty($amount) or $amount < 1) {
+            return $this->handleFreePackage($package, $orderItem);
+        }
 
         $razorpay = false;
         foreach ($paymentChannels as $paymentChannel) {
@@ -157,5 +164,26 @@ class RegistrationPackagesController extends Controller
         ];
 
         return view(getTemplate() . '.cart.payment', $data);
+    }
+
+    private function handleFreePackage($package, $orderItem)
+    {
+        $sale = Sale::createSales($orderItem, 'credit');
+
+        Accounting::createAccountingForRegistrationPackage($orderItem, 'credit');
+
+        if (!empty($orderItem->become_instructor_id)) {
+            BecomeInstructor::where('id', $orderItem->become_instructor_id)
+                ->update([
+                    'package_id' => $orderItem->registration_package_id
+                ]);
+        }
+
+        $toastData = [
+            'title' => trans('public.request_success'),
+            'msg' => trans('update.free_registration_package_successfully_asctivated_for_you'),
+            'status' => 'success'
+        ];
+        return back()->with(['toast' => $toastData]);
     }
 }

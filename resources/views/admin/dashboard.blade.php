@@ -350,7 +350,7 @@
                                         <div class="media-body">
                                             <div class="float-right text-primary font-12">{{ dateTimeFormat($recentComment->created_at, 'j M Y | H:i') }}</div>
                                             <div class="media-title">{{ $recentComment->user->full_name }}</div>
-                                            <span class="text-small text-muted">{{ nl2br(truncate($recentComment->comment, 150)) }}</span>
+                                            <span class="text-small text-muted">{{ truncate($recentComment->comment, 150) }}</span>
                                         </div>
                                     </li>
                                 @endforeach

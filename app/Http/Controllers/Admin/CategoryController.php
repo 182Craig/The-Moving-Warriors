@@ -199,11 +199,18 @@ class CategoryController extends Controller
                 }
 
                 if (!empty($subCategory['title'])) {
+                    $checkSlug = 0;
+                    if (!empty($subCategory['slug'])) {
+                        $checkSlug = Category::query()->where('slug', $subCategory['slug'])->count();
+                    }
+
+                    $slug = (!empty($subCategory['slug']) and ($checkSlug == 0 or ($checkSlug == 1 and $check->slug == $subCategory['slug']))) ? $subCategory['slug'] : Category::makeSlug($subCategory['title']);
+
                     if (!empty($check)) {
                         $check->update([
                             'order' => $order,
                             'icon' => $subCategory['icon'] ?? null,
-                            'slug' => $subCategory['slug'] ?? null,
+                            'slug' => $slug,
                         ]);
 
                         CategoryTranslation::updateOrCreate([
@@ -213,14 +220,10 @@ class CategoryController extends Controller
                             'title' => $subCategory['title'],
                         ]);
                     } else {
-                        $checkSlug = 0;
-                        if (!empty($subCategory['slug'])) {
-                            $checkSlug = Category::query()->where('slug', $subCategory['slug'])->count();
-                        }
 
                         $new = Category::create([
                             'parent_id' => $category->id,
-                            'slug' => ($checkSlug < 1 and !empty($subCategory['slug'])) ? $subCategory['slug'] : Category::makeSlug($subCategory['title']),
+                            'slug' => $slug,
                             'icon' => $subCategory['icon'] ?? null,
                             'order' => $order,
                         ]);
