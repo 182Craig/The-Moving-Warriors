@@ -159,15 +159,17 @@
             </section>
         @endif
 
-        <section class="custom header intro">
-            <div>
-                        <h2 class="section-title">Here</h2>
-                        <p class="section-hint">dddd dddd dddd</p>
-                    </div>
-        </section>
 
         @if($homeSection->name == \App\Models\HomeSection::$latest_bundles and !empty($latestBundles) and !$latestBundles->isEmpty())
-            <section class="home-sections home-sections-swiper container">
+            
+        <section class="custom header intro">
+            <div>
+                        <h2 class="section-title">Here Maybe</h2>
+                        <p class="section-hint">eeeeeeee</p>
+                    </div>
+        </section>
+        
+        <section class="home-sections home-sections-swiper container">
                 <div class="d-flex justify-content-between ">
                     <div>
                         <h2 class="section-title">{{ trans('update.latest_bundles') }}</h2>
